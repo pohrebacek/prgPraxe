@@ -1,0 +1,25 @@
+    <div class="container2"> 
+        <div class="container">
+            <div class="imageAYear">
+                <img src="" class="image">
+                <div>
+                    <p class="Year">5000 BBY</p>
+                    <p class="Status">Legends</p>
+                </div>
+
+            </div>
+
+            <div class="nadpisAText">
+                <h1>Tales of the Jedi: The Golden Age Of The Sith</h1>
+                <div class="line"></div>
+                <p>dfgdsfghsfdghdfghdfghdfghdfghdfgddddddddddd</p>
+                <div class="line2"></div>
+                <div class="stav">
+                    <img title="Mám v plánu" class="flag" id="flag_Mando1" onclick="flagChange(this)">
+                    <img title="Rozkoukáno" class="arrow" id="arrow_Mando1" onclick="arrowChange(this)">
+                    <img title="Zkouknuto" class="tick" id="tick_Mando1" onclick="tickChange(this)">
+                </div>
+
+            </div>
+        </div>
+    </div>

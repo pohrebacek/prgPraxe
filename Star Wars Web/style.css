@@ -1,0 +1,213 @@
+.image {
+    /*width: 25%;
+    height: 75%;*/
+    width: 14vw;
+    height: 42vh;
+    padding-top: 3%;
+    padding-left: 3%;
+}
+
+
+option[value="blue"] { color: blue; }
+option[value="red"] { color: red; }
+option[value="green"] { color: green; }
+
+
+h1 {
+    padding-left: 5%;
+    font-size: 4vmin;
+    color: white;
+    
+}
+
+p {
+    padding-left: 5%;
+    font-size: 2vmin;
+    color: white;
+}
+
+body {
+    background-image:url("swBackground.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+
+.container {
+    margin: 2%;
+    width: 50vw;
+    height: fit-content;
+    border: solid white 0.5vmin;
+    display: inline-flex;
+    background-color: black;
+    margin-left: 5%;
+}
+
+.container2 {
+    display: inline-flex;
+}
+
+.stavContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25vh; 
+    margin-bottom: auto;
+    padding-right: 3vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    
+}
+
+
+/*.stav {   
+   border:solid 0.5vmin;
+   border-radius: 15%;
+   font-size: 2.5vmin;
+   color: white;
+   background-color: rgb(0, 0, 0);
+   text-align: center;
+}
+
+.stav select {
+    background-color: rgb(255, 255, 255);
+}
+
+.stav button{
+    background-color: black;
+    color: white;
+}*/
+
+
+
+
+
+
+
+
+
+.prg {
+    color: blue;
+}
+.que {
+    color: red;
+}
+.done {
+    color: green;
+}
+
+
+
+
+/*.container div {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    text-align: center;
+}*/
+
+.nadpisAText {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    padding-left: 2%;
+    inline-size: 25vw;
+    overflow-wrap: break-word;
+}
+
+.imageAYear {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    text-align: center;
+}
+
+.Year {
+    font-weight: bold;
+    font-size: 3vmin;
+    margin: 2%;
+    
+}
+
+.Status {
+    font-weight: bold;
+    font-size: 3vmin;
+    margin: 2%;
+    
+}
+
+.line {
+    background-color: rgb(255, 255, 255);
+    /*width: 300px;
+    height: 2px;*/
+    width: 25vw;
+    height: 0.3vh;
+    margin-left: 5%;
+   }
+
+
+
+
+/*stav v2*/
+.line2 {
+    background-color: rgb(255, 255, 255);
+    /*width: 300px;
+    height: 2px;*/
+    width: 25vw;
+    height: 0.3vh;
+    margin-left: 5%;
+    margin-top: 25vmin;
+}
+
+.stav {
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+
+.stav img{
+    height: 7vh;
+    width: 3.5vw;
+    margin-left: 15%;
+}
+
+.flag {
+    content: url(flag_white.png);
+}
+
+.arrow {
+    content: url(arrow_white.png);
+}
+.tick {
+    content: url(tick_white.png);
+}
+
+
+
+.flag:hover {
+    content: url(flag_red.png);
+    cursor: pointer;
+}
+.arrow:hover {
+    content: url(arrow_blue.png);
+    cursor: pointer;
+}
+.tick:hover {
+    content: url(tick_green.png);
+    cursor: pointer;
+}
+
+/*.flag:focus {
+    content: url(arrow_blue.png);
+}*/
+
+.flagRed {
+    content: url(flag_red.png);
+}
+.arrowBlue {
+    content: url(arrow_blue.png);
+}
+.tickGreen {
+    content: url(tick_green.png);
+}
+
+
