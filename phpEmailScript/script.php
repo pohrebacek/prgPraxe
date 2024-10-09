@@ -7,8 +7,8 @@ use Google\Cloud\SecretManager\V1\SecretManagerServiceClient;
 
 function getDecryptionKey() {
     putenv('GOOGLE_APPLICATION_CREDENTIALS=' . __DIR__ . '/service-account.json');
-    $projectId = 'keytest-436818';
-    $secretId = 'TestServerSecret';
+    $projectId = '';
+    $secretId = '';
     $versionId = 'latest';
 
     $client = new SecretManagerServiceClient();
@@ -38,24 +38,24 @@ function decryptEmail($encryptedEmail, $key) {
 
 
 
-$apikey = '30a22e245685f1803fab71d4764b0b5e';   //tohle bude jiný až bude jejihc mailjet účet
-$apisecret = '822e1bb84ce489db2b6ff3f5a0e841e8';    //tohle bude jiný až bude jejihc mailjet účet
+$apikey = '';  
+$apisecret = '';  
 $mj = new \Mailjet\Client($apikey, $apisecret, true,['version' => 'v3.1']);
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $key = getDecryptionKey(); // Získání klíče
     if ($key) {
-        $encryptedEmail = "ZAŠIFROVANEJ EMAIL";     //ten jejich mail budu potřebovat na to zašifrování
+        $encryptedEmail = "ZAŠIFROVANEJ EMAIL";     
         $body = [
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => "NO_REPLY_EMAIL",    //to by měl bejt mail na kterej si ta firma udělá účet na mailjet
-                        'Name' => "IDK"
+                        'Email' => "NO_REPLY_EMAIL",   
+                        'Name' => ""
                     ],
                     'To' => [
                         [
                             'Email' => decryptEmail($encryptedEmail, $key),
-                            'Name' => "IDK"
+                            'Name' => ""
                         ]
                     ],
                     'Subject' => $_POST["subject"],
@@ -68,7 +68,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             ]
         ];
         $response = $mj->post(Resources::$Email, ['body' => $body]);
-        //echo print_r($body);
         if ($response->success()) {
             $data = $response->getData();
             echo "Email was sent successfully.\n";
