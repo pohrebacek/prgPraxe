@@ -545,25 +545,7 @@ def showFirstFrame():
     loginBackButton.forget()
     startFrame.pack(pady=8)
     
-    
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+   
     
 ##################################
 #          main program          # 
@@ -763,13 +745,6 @@ registerMissingMessage.place(relx=0.5, rely=0.96, anchor=tkinter.CENTER)
 
 
 
-
-
-
-
-
-
-
 #FRAME FOR DEFAULT WINDOW
 
 bankFrame = customtkinter.CTkFrame(app)
@@ -820,11 +795,6 @@ transactionsFrame.pack(side="top", fill="both",expand=True)
 
 
 
-
-
-
-
-
 transactionButton = customtkinter.CTkButton (optionsFrame,
                                              text="Finanční operace",
                                              command=lambda:showTransactionFrame())
@@ -841,20 +811,6 @@ settingsButton = customtkinter.CTkButton (optionsFrame,
                                              text="Nastavení",
                                              command=lambda:showSettingsFrame())
 settingsButton.pack(side="left", fill="both", expand=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -913,11 +869,6 @@ transactionTransferButton = customtkinter.CTkButton(toChooseFrameTransaction,
                                                     text="Platba",
                                                     command=lambda:transferScreen())
 transactionTransferButton.place(relx=0.5, rely= 0.8, anchor=tkinter.CENTER)
-
-
-
-
-
 
 
 
@@ -1028,14 +979,6 @@ depositButton = customtkinter.CTkButton(depositOptionsFrame,
                                                     text="Vložit",
                                                     command=lambda:mainAccount.deposit(depositEntry.get(), transfer))
 depositButton.place(relx=0.5, rely= 0.5, anchor=tkinter.CENTER)
-
-
-
-
-
-
-
-
 
 
 
@@ -1173,20 +1116,6 @@ emailLabel = customtkinter.CTkLabel(toChooseFrameInformation,
                                  text_color="#1F6AA5")
 emailLabel.place(rely=0.4, anchor=tkinter.CENTER)
 emailLabel.place(relx=0.025, anchor=tkinter.W)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
