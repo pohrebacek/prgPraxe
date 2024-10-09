@@ -34,4 +34,5 @@ Popis projektů na mém githubu
 # phpEmailScript
 - Moje menší zkušenost s php kdy jsem pomáhal na webové stránce pro firmu Kingsbery
 - Měl jsem za úkol zprovoznit poslání emailu z HTML form na zašifrovanou emailovou adresu Kingsbery
+- Většinu kodu jsem ale dal dohromady pomocí internetu
 - S php moc zkušeností nemám ale rád bych nějaké zkušenosti ohledně php a backendu získal
