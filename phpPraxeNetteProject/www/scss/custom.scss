@@ -1,0 +1,213 @@
+// Required
+@import "../libs/scss/functions";
+@import "../libs/scss/variables";
+@import "../libs/scss/variables-dark";
+@import "../libs/scss/maps";
+@import "../libs/scss/mixins";
+@import "../libs/scss/root";
+
+
+
+
+$primary-color: #0d6efd;
+
+//layout
+.navig {
+    color: white;
+    background-color: $primary-color;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.navig .btn-primary {
+    background-color: shift-color($primary-color, 15%);
+    border-radius: 0;
+    height: 7vh;
+    width: 10vw;
+    
+}
+
+.navig a {
+    padding-top: 1vw;
+}
+
+
+
+
+//HomePage
+.post {
+    padding-top: 3%
+}
+
+.post img {
+    height: 10%;
+    width: 10%;
+}
+
+.pageSelector {
+    padding-top: 4%;
+}
+
+//Post:show
+.postShow {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2%;
+}
+
+.postShow img {
+    height: 10%;
+    width: 10%;
+}
+
+.comments {
+    margin-bottom: 2%;
+}
+
+.addComment {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.addComment textarea {
+    width: 30vw;
+}
+
+.comment {
+    margin-bottom: 4%;
+}
+
+.like {
+    display: flex;
+    flex-direction: row;
+    padding-top: 2%;
+}
+
+.like p {
+    margin-bottom: 50%;
+}
+
+
+
+
+
+//Post:editComment
+.editComment textarea {
+    width: 30vw;
+}
+
+.postActions {
+    padding-top: 2%;
+}
+
+//Admin:show
+.WebSettings {
+    margin-top: 3%;
+}
+
+.ViewDatabaseOf {
+    margin-top: 3%;
+}
+
+//Admin:database
+.border-primary {
+    border-style: solid;
+    border: 50cm;
+    padding: 1%;
+}
+
+.filterDBrecords {
+    display: flex;
+    flex-direction: row;
+    align-items: center; // Zarovná prvky do jednoho řádku vertikálně
+    gap: 1rem; 
+}
+
+.search {
+    display: flex;
+    align-items: center;
+}
+
+.search input{
+    width: 300px;
+    min-width: none;
+}
+
+.search button{
+    margin-left: 0.5%;
+    flex-shrink: 0;
+}
+
+.record {
+    padding-top: 1%;
+}
+
+.DBactions {
+    padding-top: 1%;
+}
+
+//Edit:create
+.addPost textarea{
+    height: 40vh;
+    width: 50vw;
+    resize: none;
+}
+
+.addPost tr {
+    display: flex;
+    flex-direction: column;
+}
+
+//Edit:edit
+.editPost textarea{
+    height: 40vh;
+    width: 50vw;
+    resize: none;
+}
+
+.editPost tr {
+    display: flex;
+    flex-direction: column;
+}
+
+//common
+
+.add tr {
+    display: flex;
+    flex-direction: column;
+}
+
+.add th{
+    padding-top: 5%;
+}
+
+.edit tr {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit th{
+    padding-top: 5%;
+}
+
+
+
+
+
+
+
+
+// Tint a color: mix a color with white
+@function tint-color($color, $weight) {
+    @return mix(white, $color, $weight);
+  }
+  
+  // Shade a color: mix a color with black
+  @function shade-color($color, $weight) {
+    @return mix(black, $color, $weight);
+  }
+  
+  // Shade the color if the weight is positive, else tint it
+  @function shift-color($color, $weight) {
+    @return if($weight > 0, shade-color($color, $weight), tint-color($color, -$weight));
+  }

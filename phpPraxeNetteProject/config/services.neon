@@ -1,0 +1,28 @@
+services:
+	- App\Router\RouterFactory::createRouter
+	- Nette\Security\Permission
+
+	- App\Module\Model\Security\MyAuthorizator
+	- App\Module\Model\Security\MyAuthenticator
+
+	- App\Module\Model\Base\BaseRepository
+
+	- App\Module\Model\Post\PostFacade
+	- App\Module\Model\Post\PostMapper
+	- App\Module\Model\Post\PostsRepository
+
+	- App\Module\Model\Comment\CommentFacade
+	- App\Module\Model\Comment\CommentMapper
+	- App\Module\Model\Comment\CommentsRepository
+
+	- App\Module\Model\User\UserFacade
+	- App\Module\Model\User\UserMapper
+	- App\Module\Model\User\UsersRepository
+	
+	- App\Module\Model\Like\LikesRepository
+	- App\Module\Model\Like\LikeFacade
+	- App\Module\Model\Like\LikeMapper
+
+	- App\Module\Model\Settings\SettingsRepository
+	- App\Module\Model\Settings\SettingsFacade
+	- App\Module\Model\Settings\SettingsMapper
