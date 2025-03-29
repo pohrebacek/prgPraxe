@@ -15,8 +15,9 @@ Popis projektů na mém githubu
 - Tvorbě webových stránek se ovšem moc nevěnuji, spíše mě zajímá tvorba aplikací
 
 # chatApp
-- Rozdělaný projekt který jsem se sem rozhodl dát protože je to něco nového čemu jsem se začal věnovat
 - Má jít o chatovací aplikaci ve které jsem zatím stihl udělat ukládání chat rooms k jednotlivým uživatelům
+- Zatím se jedná a dost základní, ale už funkční verzi chatapp
+- Na appce ještě pracuji a ladím nějaké nedokonalosti abych základní verzi mohl považovat za hotovou
 - Tímto projektem se chci naučit více práci s Flasekem, Socketio a sqlalchemy
 - Na tomto projektu stále pracuji
 
