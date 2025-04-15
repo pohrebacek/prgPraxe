@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{{ url_for('main.home') }}">Zpět</a>
+    <div id="errorMessages" class="errorMessages">
+
+    </div>
+    <form action="#" method="POST" id="registerForm">
+        <p>Zadejte své uživatelské jméno:</p>
+        <input type="text" name="nm">
+        <p>Zadejte své heslo:</p>
+        <input type="password" name="password">
+        <p>Zadejte své heslo znovu:</p>
+        <input type="password" name="passwordCheck">
+        <input type="submit" name="submit">
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='indexRegister.js') }}"></script>
+</body>
+</html>
