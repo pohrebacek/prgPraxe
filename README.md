@@ -16,10 +16,9 @@ Popis projektů na mém githubu
 
 # chatApp
 - Má jít o chatovací aplikaci ve které jsem zatím stihl udělat ukládání chat rooms k jednotlivým uživatelům
-- Zatím se jedná a dost základní, ale už funkční verzi chatapp
-- Na appce ještě pracuji a ladím nějaké nedokonalosti abych základní verzi mohl považovat za hotovou
-- Tímto projektem se chci naučit více práci s Flasekem, Socketio a sqlalchemy
-- Na tomto projektu stále pracuji
+- Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
+- Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
+- Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
 
 # guiBankSystem
 - Můj největší projekt
