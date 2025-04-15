@@ -21,7 +21,7 @@ Popis projektů na mém githubu
 - Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
 
 # guiBankSystem
-- Můj největší projekt
+- Jeden z větších projektů
 - Snažil jsem se zde i o nějakou grafickou úpravu
 - Chtěl jsem se celkově naučit něco málo o vývoji "mobilních" aplikací, proto jsem si zvolil bankovnictví
 - Uživatel si může vytvořit účet, pracovat se svými financemi, nastavit tmavý a světlý režim, posílat peníze atd.
