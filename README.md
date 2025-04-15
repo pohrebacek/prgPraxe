@@ -32,8 +32,9 @@ Popis projektů na mém githubu
 - Jedná se pouze o malý script, který používám jelikož nemám spotify premium
 - Script má za úkol detekovat zda se pustí reklama na spotify, a pokud ano, spotify se vypne a zapne a následně spustí další song ve frontě
 
-# phpEmailScript
-- Moje menší zkušenost s php kdy jsem pomáhal na webové stránce pro firmu Kingsbery
-- Měl jsem za úkol zprovoznit poslání emailu z HTML form na zašifrovanou emailovou adresu Kingsbery
-- Většinu kodu jsem ale dal dohromady pomocí internetu
-- S php moc zkušeností nemám ale rád bych nějaké zkušenosti ohledně php a backendu získal
+# phpPraxeNetteProject
+- Jedná se o webovou aplikaci blogu
+- Na aplikaci jsem pracoval v Plzeňské firmě RTsoft, kde jsem byl na praxích
+- Blog jsem programoval v PHP frameworku Nette
+- Na aplikaci jsem dělal vše sám a díky tomu jsem se na tomto testovacím projektu hodně naučil
+- Na projektu stále pracuji abych ho dostal do fáze, kdy budou od firmy splněny všechny požadavky
