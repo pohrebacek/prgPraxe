@@ -19,6 +19,7 @@ Popis projektů na mém githubu
 - Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
 - Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
 - Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
+- Projekt ovšem nemá nijak udělané GUI, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
 
 # guiBankSystem
 - Jeden z větších projektů
