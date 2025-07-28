@@ -1,0 +1,112 @@
+prémiový účet - návrh
+
+do post db přidam boolean "Premium" -> určuje zda jde o premium post nebo ne
+podle toho se aplikuje funkce na zobrazení pouze prvních 300 znaků postu...
+
+db pro transakce/nákupy premium?? dobrý nápad??
+košík nákupní bude přes sessions -> zjistim co to je a jak to funguje
+
+v user db bude timestamp "Premium end" -> podle délky premium nastavim kdy končí, když to datum bude starý tak premium user nemá, pokud user nemá premium, má null
+
+
+
+
+likes u kometů - návrh
+
+funkcionalita like bude stejná, vlastně to zkopčim od postu
+do db likes přidam column comment_id
+pak se jenom bude kontrolovat jestli je comment_id null, jestli jo tak se like přidá postu, jestli ne, tak commentu
+
+podle gpt je lepší mít tabulky separátně na post_likes a comment_likes, protože je to lepší do budoucna pokud appku budu zvětšovat
+
+
+//SQL
+
+ALTER TABLE test.users ADD premium_until timestamp DEFAULT null  NULL;
+
+
+
+
+CREATE TABLE premium_purchases (
+    id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id int(11) NOT NULL,
+    length varchar(255) NOT NULL,
+    price int(11) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB CHARSET=utf8;
+
+
+
+ALTER TABLE test.comments ADD replyTo INT NULL;
+
+
+
+
+CREATE TABLE likes_comments (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    comment_id int(11) NOT NULL,
+    user_id int(11) NOT NULL,
+    FOREIGN KEY (comment_id) REFERENCES comments (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+) ENGINE=InnoDB CHARSET=utf8;
+
+
+
+
+
+
+
+
+
+CREATE TABLE external_posts (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    guid varchar(255) NOT NULL,
+    post_id int(11) NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts (id)
+) ENGINE=InnoDB CHARSET=utf8;
+
+6.7.2025
+
+přidat do settings table "charsForNonPremium"
+
+
+
+23.7.2025
+ALTER TABLE comments
+DROP FOREIGN KEY comments_ibfk_1;
+
+ALTER TABLE comments
+ADD CONSTRAINT comments_ibfk_1 FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE;
+
+-- 1) Odstraň původní cizí klíč (název může být jiný, pokud jsi ho nepřejmenoval ručně)
+ALTER TABLE likes_comments
+DROP FOREIGN KEY likes_comments_ibfk_1;
+
+-- 2) Přidej nový se správným CASCADE chováním
+ALTER TABLE likes_comments
+ADD CONSTRAINT likes_comments_ibfk_1 
+FOREIGN KEY (comment_id) 
+REFERENCES comments(id) 
+ON DELETE CASCADE;
+
+-- 1) Odstranit starý FK
+ALTER TABLE likes
+DROP FOREIGN KEY likes_ibfk_1;
+
+-- 2) Přidat nový s CASCADE
+ALTER TABLE likes
+ADD CONSTRAINT likes_ibfk_1 
+FOREIGN KEY (post_id) 
+REFERENCES posts(id) 
+ON DELETE CASCADE;
+
+-- 1) Smazat původní cizí klíč
+ALTER TABLE external_posts
+DROP FOREIGN KEY external_posts_ibfk_1;
+
+-- 2) Přidat nový s ON DELETE CASCADE
+ALTER TABLE external_posts
+ADD CONSTRAINT external_posts_ibfk_1
+FOREIGN KEY (post_id)
+REFERENCES posts(id)
+ON DELETE CASCADE;

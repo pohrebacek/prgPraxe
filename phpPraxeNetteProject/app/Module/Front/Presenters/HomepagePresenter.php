@@ -11,6 +11,9 @@ use App\Module\Model\Post\PostsRepository;
 use App\Module\Model\Security\MyAuthorizator;
 use Nette\Application\UI\Form;
 use App\Module\Model\Settings\SettingsRepository;
+use App\Module\Model\User\UserFacade;
+use App\Service\CurrentUserService;
+use App\Module\Components\Paginator\PaginatorComponent;
 
 
 final class HomepagePresenter extends BasePresenter
@@ -18,6 +21,8 @@ final class HomepagePresenter extends BasePresenter
     public function __construct(
 		private PostsRepository $postsRepository,
 		private SettingsRepository $settingsRepository,
+		private UserFacade $userFacade,
+		private CurrentUserService $currentUser,
 		private int $postsPerPage = 5
 	) {
 	}
@@ -29,29 +34,15 @@ final class HomepagePresenter extends BasePresenter
 		bdump($this->postsPerPage);
 	}
 
-    public function renderDefault(): void
-    {	
-		$numberOfPosts = $this->postsRepository->getNumberOfRows();	//získá počet všech záznamů z tabulku posts
-		$this->template->postsArray = $this->postsRepository->getSomePostsFromEnd($this->postsPerPage, 0);	//vezme z konce tabulky (jeden tedy od nejnovější po nejstarší) "howMany" postů a přeskočí "from" postů
-		$this->template->pages = $this->getNumberOfPages();
 
-		//DEBUG
-		bdump($this->getUserRole());
-		bdump($numberOfPosts);
-		bdump((int) $numberOfPosts/$this->postsPerPage + $this->restPage($numberOfPosts));
-		bdump((int) $numberOfPosts/$this->postsPerPage);
-		bdump((int) $numberOfPosts%$this->postsPerPage);
-		bdump($this->restPage($numberOfPosts));
-    }
 
-	public function renderPage(int $page)
+	public function renderDefault()	//vezme číslo page, na kterou má skočit
 	{
-		$this->template->postsArray = $this->postsRepository->getSomePostsFromEnd($this->postsPerPage, ($page-1)*$this->postsPerPage);
+        $session = $this->getSession()->getSection('navigation');
+		$page = intval($this->getParameter('page') ?? 1);
 		bdump($page);
-		$this->template->page =$page;
-		$numberOfPosts = $this->postsRepository->getNumberOfRows();
-		$this->template->pages = $this->getNumberOfPages();
-		bdump((int) $numberOfPosts/$this->postsPerPage + $this->restPage($numberOfPosts));
+		$session->homepageUrl = $this->getHttpRequest()->getUrl()->getAbsoluteUrl();
+		$this->template->postsArray = $this->postsRepository->getSomePostsFromEnd($this->postsPerPage, ($page-1)*$this->postsPerPage);	//vezme "postsPerPage" postů od pozice page na kterou skočit -1 bcs se jede od 0
 	}
 
 	public function restPage($numberOfPosts)	//metoda co přidá stránku kde jsou posty co zbydou po dělení
@@ -92,14 +83,27 @@ final class HomepagePresenter extends BasePresenter
 		$data = $form->getValues();
 		$page = $data->page;
 		if ($page < 1 || $page > $this->getNumberOfPages()) {
-			$form->addError("Zadejte platné číslo stránky");
+			$this->flashMessage("Zadejte platné číslo stránky", "danger");
 		} else {
 			$this->redirect("Homepage:page", (int) $page);
 		}
 		
 	}
 
-	public function getNumberOfPages(){
+	protected function createComponentPaginator(): PaginatorComponent
+	{
+    	$comp = new PaginatorComponent;
+    	$comp->setCurrentPage(intval($this->getParameter('page') ?? 1));
+	    $comp->setTotalPages($this->getNumberOfPages());
+
+	    $comp->onPageChange[] = function (int $page): void {	//do toho pole se přidá funkce na redirect
+	        $this->redirect('this', ['page' => $page]);
+	    };
+
+	    return $comp;
+	}
+
+	public function getNumberOfPages(){	//spočítá počet stránek na základě počtu postů v db a počtu postů co se můžou zobrazit na jedné stránce 
 		return (int) ($this->postsRepository->getNumberOfRows()/$this->postsPerPage + $this->restPage($this->postsRepository->getNumberOfRows()));
 	}
 

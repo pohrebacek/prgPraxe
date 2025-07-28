@@ -6,11 +6,17 @@ use Nette;
 use Nette\Application\UI\Form;
 use App\Module\Model\Post\PostsRepository;
 use App\Module\Model\Comment\CommentsRepository;
+use App\Module\Model\User\UsersRepository;
 use App\Module\Model\Post\PostFacade;
 use App\Module\Model\Comment\CommentFacade;
 use App\Module\Model\Security\MyAuthorizator;
 use App\Module\Model\User\UserFacade;
 use App\Module\Model\Like\LikesRepository;
+use App\Module\Model\Like\LikeFacade;
+use App\Module\Model\Settings\SettingsRepository;
+use App\Service\CurrentUserService;
+use App\Module\Model\LikeComment\LikesCommentsRepository;
+use App\Module\Model\LikeComment\LikeCommentFacade;
 
 /**
  * @method void commentFormSucceeded(\stdClass $data)
@@ -21,26 +27,53 @@ final class PostPresenter extends BasePresenter
 
 	/** @var string */
 	private string $templateIsShow = "false";	//mam to jako vlastnost protože jinak to jako k samotný variable nemá v ostatních funkcích přístup
+	private string $showReplyCommentForm = "false";
+	private ?int $replyCommentId = null;	//ten ? říká že to je nullable int (int co může být int nebo null a začíná jako null)
 	public function __construct(
 		private CommentsRepository $commentsRepository,
 		private PostsRepository $postsRepository,
 		private PostFacade $postFacade,
 		private CommentFacade $commentFacade,
 		private UserFacade $userFacade,
-		private LikesRepository $likesRepository
+		private LikesRepository $likesRepository,
+		private CurrentUserService $currentUser,
+		private LikesCommentsRepository $likesCommentsRepository,
+		private SettingsRepository $settingsRepository,
+		private UsersRepository $usersRepository,
+		private LikeFacade $likeFacade,
+		private LikeCommentFacade $likeCommentFacade,
+        private int $charsForNonPremium = 300
 	) {
 	}
 
+	public function startup(): void
+	{
+		parent::startup();
+		$this->charsForNonPremium = (int) ($this->settingsRepository->getRowByKey("charsForNonPremium"))->value;
+		bdump($this->charsForNonPremium);
+	}
 	
 
 	public function renderShow(int $id): void
 	{
+        $session = $this->getSession()->getSection('navigation');
+		$this->template->homepageUrl = $session->homepageUrl ?? "Homepage:";
+
+		bdump($this->getSession()->getSection('navigation')->previousUrl);
+		bdump($this->currentUser->hasPremiumAccess());
+		bdump($this->replyCommentId);
 		//NA DEBUG
 		$user = $this->getUser();
-		$user = $this->userFacade->getUserDTO($user->id);
+		if ($user->isLoggedIn()){
+			$user = $this->userFacade->getUserDTO($user->id);
+
+		}
 		bdump($user);
 
 		$this->templateIsShow = "true";
+		$this->template->showReplyCommentForm = $this->showReplyCommentForm;
+		$this->template->replyCommentId = $this->replyCommentId;
+
 		$post = $this->postsRepository
 			->getRowById($id);
 		if (!$post) {
@@ -48,13 +81,29 @@ final class PostPresenter extends BasePresenter
 		}
 		$postDTO = $this->postFacade->getPostDTO($post->id);
 		bdump($postDTO);	//bdump sám vypíše atributy a co je co
-		$this->template->post = $post;
-		if ($postDTO->image){
-			$this->template->imagePath = $postDTO->image;
-		} else {
-			$this->template->imagePath = null;
+		$this->template->premium = false;
+
+		bdump($postDTO->premium && !$this->currentUser->hasPremiumAccess());
+		//if (($postDTO->premium && !$this->currentUser->hasPremiumAccess()) || !$this->userFacade->isOwnerOfPost($postDTO, $user->id) && !$this->currentUser->isAdmin()) {	//post je buď premium a user nemá premium, nebo uživatel neni owner postu a zároveň neni amdin
+		if ($postDTO->premium && (!$this->currentUser->hasPremiumAccess() || !$this->userFacade->isOwnerOfPost($postDTO, $user->id) && !$this->currentUser->isAdmin())) {	//post je premium a zároveň user nemá premium, nebo uživatel neni owner postu a zároveň neni amdin
+			bdump("preview");
+			$this->template->premium = true;	//pak se nastaví že post je premium pro template
+			$this->template->postContent = $this->postFacade->getPreview($postDTO, $this->charsForNonPremium);	//a nastaví se pouze preview verze postu
 		}
-		$this->template->comments = $post->related('comments')->order('created_at');	//related prostě zjistí jaký záznamy z uvedený tabulky jsou vázaný na záznam co funcki volá 
+
+		$this->template->post = $postDTO;
+		$this->template->postAuthor = $this->postFacade->getOwnerUserName($postDTO);
+		$this->template->imagePath = $this->postFacade->getImagePath($postDTO);
+
+
+		$this->template->comments = $post->related('comments')->where('replyTo IS NULL')->order('created_at');	//related prostě zjistí jaký záznamy z uvedený tabulky jsou vázaný na záznam co funcki volá 
+		
+		$repliesGrouped = [];
+		foreach ($post->related('comments')->where('replyTo IS NOT NULL')->order('created_at') as $reply) {	//projde odpovědi a do pole přiřadí každýmu id komentu co má odpověď tu danou odpověď
+			$repliesGrouped[$reply->replyTo][] = $reply;	//přidej na pozici "id komentu" jeho odpověď, ta druhá [] říká "přidej to na konec pole"
+		}
+		bdump($repliesGrouped);
+		$this->template->replies = $repliesGrouped;
 		$this->template->likesCount = $post->related('likes')->count();
 		
 		//NA DEBUG
@@ -69,7 +118,8 @@ final class PostPresenter extends BasePresenter
         if (!$comment) {
             $this->error('Comment not found');
         }
-        $this->commentsRepository->deleteRow($id);
+        $this->commentFacade->deleteComment($id);
+		$this->flashMessage("Komentář byl úspěšně smazán", "success");
         $this->redirect('Post:show', $comment->post_id);
     }
 
@@ -78,19 +128,27 @@ final class PostPresenter extends BasePresenter
 		$data = [];
 		$data["post_id"] = is_numeric($this->getParameter("id")) ? intval($this->getParameter("id")) : 0;
 		$data["user_id"] = is_numeric(($this->getUser())->id) ? intval(($this->getUser())->id) : 0;
+		
+		$this->likeFacade->toggleLike($data);
 
-		if (!$this->likesRepository->getRowByPostIdAndUserId($data["post_id"], $data["user_id"]))
-		{
-			$this->likesRepository->saveRow($data, null);
-		} else {
-			$this->likesRepository->deleteLikeByPostIdAndUserId($data["post_id"], $data["user_id"]);
-		}
 		$this->redirect("Post:show", $data["post_id"]);
 		
 	}
 
+	public function handleLikeComment(int $commentId): void
+	{
+		$data = [];
+		$data["comment_id"] = $commentId;
+		$data["user_id"] = is_numeric(($this->getUser())->id) ? intval(($this->getUser())->id) : 0;
 
-	
+		$this->likeCommentFacade->toggleLikeComment($data);
+
+		$this->redirect("Post:show", $this->getParameter("id"));
+
+
+	}
+
+
 	public function renderEditComment(int $id): void
     {
 		bdump($this->templateIsShow);
@@ -106,7 +164,8 @@ final class PostPresenter extends BasePresenter
 		$form = new Form;
 
 		$form->addHidden('templateIsShow', $this->templateIsShow);	//přidá do formu skrytou vlastnost, to protože to jinak nešlo předat to info
-	
+		$form->addHidden("replyCommentId", null);
+		
 		$form->addTextArea('content')
 			->setRequired()
 			->setHtmlAttribute("class", "form-control");
@@ -130,14 +189,22 @@ final class PostPresenter extends BasePresenter
         $id = $this->getParameter("id");	//id commentu, vyřešený problém: když má post a comment stejný id a na tom postu dat add comment, tak se přidá na post co má id jako post_id commentu co má stejný id
         $edit = false;
 		bdump($data->templateIsShow);
+		bdump($data);
+		bdump($data->replyCommentId);
+		if ($data->replyCommentId == '') {
+			$data->replyCommentId = null;
+		}
 
 		$user = $this->getUser();
 		$user = $this->userFacade->getUserDTO($user->id);
+		$templateIsShow = $data->templateIsShow;
 		
 
 		
 		if ($id) {
 			if($data->templateIsShow == "false") {
+				$data->replyTo = $data->replyCommentId;
+				unset($data->replyCommentId);
 				unset($data->templateIsShow);	//tady se smaže to hidden vlastnost aby později nedělala bordel
 				$this->commentsRepository->saveRow((array)$data, $id);
 				$edit = true;
@@ -150,13 +217,18 @@ final class PostPresenter extends BasePresenter
 					"name" => $user->username,
 					"email" =>$user->email,
 					"content" => $data->content,
-					"ownerUser_id" => $user->id
+					"ownerUser_id" => $user->id,
+					"replyTo" => $data->replyCommentId
 				], null);
 			bdump($comment);
         	}
 
 			if ($comment){
-				$this->flashMessage("Děkuji za komentář", "success");
+				if ($templateIsShow == "false") {
+					$this->flashMessage("Komentář byl úspěšně upraven", "success");
+				} else {
+					$this->flashMessage("Komentář byl úspěšně přidán", "success");
+				}
 				if ($edit){
 					$this->redirect("Post:show", $comment->post_id);
 				}

@@ -1,0 +1,58 @@
+https://rtsoftsro-my.sharepoint.com/:w:/g/personal/hora_rtsoft_cz/EZZqvnQ53kZEpLXyT6hhTFEBeH6eyKLRB9Axde1YUaYXIA?rtime=3q8ttaBV3Ug
+
+
+PŘED ODEVZDÁNIM PAVLOVI PŘIPRAVIT SPEŠL DB DUMP KDE BUDE VLASTNĚ VŠE ODE MĚ
+
+
+
+
+
+
+DONE
+- předělat DTO na readonly
+- změnit variable postsPerPage v homepagepresenter na záznam z db
+- Admin tab
+- opravit že po reloadu se zas přidá/odebere like
+- přidat na výběr rolí dropdown menu
+- v úpravě usera dát změnu hesla jako samostatnou možnost, jinak tu basic úprav dát bez hesla
+- v adminu šipka zpátky na předchozí stránku
+- ve froms přidávání do db změnit přidávání za id na přidávání za name
+- uspořádat services.neon
+- v admin tab přidat filtraci na výsledky z databáze (vyhledávání bude fce ve facade jako FindPostBySomeParam(param), to podle předanýho param najde row)
+- jak to ukazuj v košíku do kdy je to premium, tak to upravit tak, aby to přičítalo k datumu co má user v db, jestli nemá premium tak to bude přičítat k current premium, protože aby šlo normálně premium prodlužovat
+- udělat že to premium končí a kontrola zda to premium user furt má
+- smazání main commentu musí smazat i jeho replies
+- moc replies = nejdou další
+- opravit likesCount pro like comment v Post:show
+- ve view details v adminDb u user přidat počet likes u komentů
+- ve filtraci u nějakých věcí dodělat aby to hledalo jako LIKE ne konkrétně co napíšu
+- dát edit record button v AdminDB:users to toho view details template (asi je na mysli to že když v userDb kliknu na edit a pak jdu zpátky tak tam neni view details)
+- udělat settings na počet znaků pro ne premium
+- upravit rotažení button pro nepremium usery u premium postu
+- upravit aby vlastně text postu byl zarovnanej podle daný šířky postu
+- ve view details v adminDb u user přidat premium info
+- přidat k postu do presenteru jméno autora
+- upravit aby by navbar a butttony v něm líp reposnzivní
+- v edit ercord pro post to ukazuje id místo jména
+- upravit v adminDb pro comment že to u replyTo ukazuje id commentu
+- pořešit aby generování postu u řešilo jako dát text do normálního textu a ne aby tam byly vidět ty tagy
+- když otevřeš post a pak jdeš zpět tak tě to dá na homepage a ne na danou stránku postů
+- zobrazení reply form refreshne stránku - je to annoying
+- kontrola jestli má vygenerovanej post image nefunguje
+- ve filtraci v admin db přidat možnost řadit podle data (všude podle přidání, u usera podle register)
+- udělat paginaci celou jako komponentu
+- postpresenter 55 a 56 schovat do medot (
+    	if ($postDTO->image){
+			$this->template->imagePath = $postDTO->image;
+		} else {
+			$this->template->imagePath = null;
+		}
+) asi
+- ten dlouhej switch a ty formy dej do vlastních souborů, uděleje každej template pro jednu db
+- předělat mixed na cokoliv jen ne mixed
+- předělat vzhled addError na něco hezčího 
+- doplnit všude flashmessages
+- postpresenter 80 - 85 schovat celý do like facade
+- v nette nastavit práva pro zobrazování stránek (že se přes odkaz nedostanu kam nemam)
+- šipečka back v post:show -> prostě když dam nějekaou akci jako reply tak to je taky v url takže se to pak vrací na akce
+- postylovat comments (rozlišit basic a reply)

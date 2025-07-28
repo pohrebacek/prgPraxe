@@ -1,0 +1,78 @@
+{block content}
+
+<div class="goBack">
+    <a n:href="AdminDb:users">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4" width="30" height="30">
+            <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+        </svg>
+        Zpět
+    </a>
+<div>
+
+<h1>Přehled dat</h1>
+<div>
+    <p>Uživatelské jméno: {$userData->username}</p>
+    <p>Email: {$userData->email}</p>
+    <p>Role: {$userData->role}</p>
+    {if $hasPremium}
+        <p>Premium: do {$userData->premiumUntil}</p>
+    {else}
+        <p>Premium: NEZAKOUPENO</p>
+    {/if}
+</div>
+<h1>Aktivita</h1>
+<div>
+    <p>Naposledy přihlášen: {$userData->lastLoggedIn}</p>
+    <p>Počet likes u komentářů: {$likesOfComments}</p>
+    <p>Počet likes u příspěvků: {$likesOfPosts}</p>
+</div>
+
+<div>
+<h2>Aktivita v průběhu času</h2>
+<form id="range-form" method="get">
+  <label for="range-select">Rozsah dat:</label>
+  <select id="range-select" name="range" onchange="this.form.submit()" class="form-select">
+      <option value="6" n:attr="selected => isset($_GET['range']) && $_GET['range'] == '6'">Posledních 6 měsíců</option>
+      <option value="12" n:attr="selected => isset($_GET['range']) && $_GET['range'] == '12'">Poslední rok</option>
+      <option value="years" n:attr="selected => isset($_GET['range']) && $_GET['range'] == 'years'">Po rocích od roku registrace</option>
+  </select>
+  <input type="hidden" name="recordId" value="{$userData->id}">
+</form>
+</div>
+
+
+<div>
+    <canvas id="myChart"></canvas>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctx = document.getElementById('myChart');
+  
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: {$labels},
+          datasets: [
+              {
+                  label: "Posts",
+                  data: {$posts},
+                  backgroundColor: 'rgba(54, 162, 235, 0.6)',
+              },
+              {
+                  label: "Comments",
+                  data: {$comments},
+                  backgroundColor: 'rgba(255, 159, 64, 0.6)',
+              }
+          ]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              y: { beginAtZero: true }
+          }
+      }
+  });
+  </script>
+  

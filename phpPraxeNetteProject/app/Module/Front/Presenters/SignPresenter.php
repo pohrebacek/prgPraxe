@@ -5,6 +5,7 @@ use App\Module\Model\User\UsersRepository;
 use Nette;
 use Nette\Application\UI\Form;
 use App\Module\Model\Security\MyAuthenticator;
+use PDOException;
 
 final class SignPresenter extends Nette\Application\UI\Presenter
 {
@@ -44,16 +45,17 @@ final class SignPresenter extends Nette\Application\UI\Presenter
 
     public function signUpFormSucceeded(Form $form): void
     {
+        try {
         $data = $form->getValues();
         $data["role"] = "user";
         bdump($data);
         $data->password = $this->passwords->hash($data->password);
         if ($this->usersRepository->getRowByUsername($data->username) || $this->usersRepository->getRowByEmail($data->email)){
-            $form->addError('Tento účet již existuje');
+            $this->flashMessage('Tento účet již existuje', "danger");
         }
         elseif (!$this->passwords->verify($data->passwordCheck, $data->password)) { //funkce verify zkontroluje hash a zadaný heslo, samotná funkce hash totiž udělá jinej hash i ze stejných slov
             bdump($data);
-            $form->addError('Vámi zadaná hesla musí být stejná');
+            $this->flashMessage('Vámi zadaná hesla musí být stejná', "danger");
         } else {
             $passwordCheck = $data->passwordCheck;
             unset($data->passwordCheck);
@@ -64,6 +66,11 @@ final class SignPresenter extends Nette\Application\UI\Presenter
             bdump($this->getUser());
             bdump($this->getUser()->getIdentity());
             $this->redirect('Homepage:');
+        }
+        }
+
+        catch (PDOException $e) {
+            $this->flashMessage("Použijte normánlí znaky", "danger");
         }
         
     }
@@ -95,12 +102,21 @@ final class SignPresenter extends Nette\Application\UI\Presenter
 
         try {
             $this->getUser()->login($this->authenticator->authenticate($username, $password));
+            
             bdump($this->getUser());
             bdump($this->getUser()->getIdentity());
+            $this->database->table('users')->where('id', $this->getUser()->getIdentity()->id)->update([
+                'last_logged_in' => (new \DateTimeImmutable())->format('Y-m-d H:i:s')
+            ]);
+            
             $this->redirect('Homepage:');
+            
     
-        } catch (Nette\Security\AuthenticationException $e) {
-            $form->addError('Nesprávné přihlašovací jméno nebo heslo.');
+        } catch (PDOException $e) {
+            $this->flashMessage("Použijte normánlí znaky", "danger");
+        }
+         catch (Nette\Security\AuthenticationException $e) {
+            $this->flashMessage('Nesprávné přihlašovací jméno nebo heslo.', "danger");
         }
     }
 

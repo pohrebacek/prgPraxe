@@ -7,17 +7,20 @@ use Nette;
 use Nette\Application\UI\Form;
 use App\Module\Model\Post\PostsRepository;
 use App\Module\Model\Comment\CommentFacade;
+use App\Service\CurrentUserService;
 
 /**
  * @method void postFormSucceeded(Form $form)
  */
 final class EditPresenter extends BasePresenter
 {
+    private string $templateIsCreate = "true";
 	public function __construct(
 		private PostsRepository $postsRepository,
         private PostFacade $postFacade,
         private UserFacade $userFacade,
-        private CommentFacade $commentFacade
+        private CommentFacade $commentFacade,
+        private CurrentUserService $currentUser
 	) {
 	}
 
@@ -25,17 +28,22 @@ final class EditPresenter extends BasePresenter
     {
         parent::startup();
     
-        if (!$this->getUser()->isLoggedIn()) {
+        if (!$this->currentUser->isLoggedIn()) {
             $this->redirect('Sign:in');
         }
+    }
+
+    public function renderCreate()
+    {
+
+        
     }
 
  
 
     public function renderEdit(int $id): void   //stránka na upravení postu, id převezme ze šablony
     {
-        $role = $this->getUserRole();
-		bdump($role);
+        $this->templateIsCreate = "false";
         $post = $this->postFacade->getPostDTO($id);
     
         if (!$post) {
@@ -56,6 +64,7 @@ final class EditPresenter extends BasePresenter
             $this->error('Post not found');
         }
         $this->postFacade->deletePost($id);
+        $this->flashMessage("Příspěvek byl úspěšně smazán", "success");
         $this->redirect('Homepage:');
     }
 
@@ -63,6 +72,7 @@ final class EditPresenter extends BasePresenter
     protected function createComponentPostForm(): Form
     {
         $form = new Form;
+        $form->addHidden('templateIsCreate', $this->templateIsCreate);
         $form->addText('title', 'Titulek:')
             ->setRequired()
             ->setHtmlAttribute("class", "form-control");
@@ -79,6 +89,14 @@ final class EditPresenter extends BasePresenter
                 return in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif']);
             }, 'Soubor musí být platný obrázek (JPG, PNG nebo GIF).');
     
+            bdump($this->getUser()->getIdentity());
+            if ($this->currentUser->hasPremiumAccess()) {
+                bdump($this->getUser());
+                $form->addCheckbox("premium", "Premium")
+                    ->setHtmlAttribute("class", "form-check-input");
+            }
+
+        
         $form->addSubmit('send', 'Uložit a publikovat')
              ->setHtmlAttribute("class", "btn btn-outline-primary");
     
@@ -105,7 +123,7 @@ final class EditPresenter extends BasePresenter
                     move_uploaded_file($tempPath, $targetFile);
                     bdump($tempPath);
                 }
-                return "http://www.localhost:9000/images/" . basename($_FILES['image']['name']);
+                return "http://www.localhost:8000/images/" . basename($_FILES['image']['name']);
             } else {
                 return null;
             }
@@ -119,10 +137,13 @@ final class EditPresenter extends BasePresenter
     {
         $id = $this->getParameter('id');
         $data = (array) $form->getValues();
+        $templateIsCreate = $data["templateIsCreate"];
+        unset($data["templateIsCreate"]);
         $data["image"] = $this->getImageFromForm();
         $user = $this->getUser();
         $user = $this->userFacade->getUserDTO($user->id);
         $data["user_id"] = $user->id;
+        bdump($data);
     
         if ($id) {
             $post = $this->postFacade->getPostDTO($id);
@@ -133,7 +154,12 @@ final class EditPresenter extends BasePresenter
                 ->saveRow($data, $id);
         }
     
-        $this->flashMessage('Příspěvek byl úspěšně publikován.', 'success');
+        if ($templateIsCreate == "false") {
+            $this->flashMessage("Příspěvek byl úspěšně upraven", "success");
+        } else {
+            $this->flashMessage('Příspěvek byl úspěšně publikován.', 'success');
+        }
+        
         if ($post){
             $this->redirect('Post:show', $post->id);
         }

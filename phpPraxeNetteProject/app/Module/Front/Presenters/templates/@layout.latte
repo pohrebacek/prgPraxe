@@ -10,6 +10,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js "></script>
 
 	<link rel="stylesheet" href="{$basePath}/scss/custom.css">
 </head>
@@ -22,11 +23,13 @@
 			<a n:href="Admin:show" class="btn btn-primary">Admin Tab</a>
 		{/if}
 		 <a n:href="User:show" class="btn btn-primary">{$user->getIdentity()->username}</a>
+		 <a n:href="Shop:premium" class="btn btn-primary">Premium</a>
 		<a n:href="Sign:out" class="btn btn-primary">Odhlásit</a>
 	{else}
 		<a n:href="Sign:in" class="btn btn-primary">Přihlásit</a>
 	{/if}
     </div>
+
 	<div class=container>
 		<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type">{$flash->message}</div>
 
@@ -36,6 +39,44 @@
 	{block scripts}
 	<script src="https://nette.github.io/resources/js/3/netteForms.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/nette.ajax.js@3.0.0"></script>
+	<script src="{$basePath}/js/nette.ajax.js"></script>
+
+
+	<script>
+    	// inicializace AJAXu
+    	document.addEventListener('DOMContentLoaded', () => {
+    	    Nette.init();
+    	});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+		    document.querySelectorAll('.show-reply-form').forEach(function (button) {
+		        button.addEventListener('click', function (e) {
+		            e.preventDefault();
+		            const commentId = this.getAttribute('data-comment-id');
+				
+		            // Skryj všechny formuláře
+		            document.querySelectorAll('[id^="reply-form-"]').forEach(div => {
+		                div.style.display = 'none';
+		            });
+				
+		            // Zobraz ten odpovídající
+		            const form = document.getElementById('reply-form-' + commentId);
+		            if (form) {
+		                form.style.display = 'block';
+		            }
+					// Nastav reply ID do hidden inputu
+           			const hiddenInput = form.querySelector('input[name="replyCommentId"]');
+           			if (hiddenInput) {
+           			    hiddenInput.value = commentId;
+           			}
+		        });
+		    });
+		});
+	</script>
+
 	{/block}
 </body>
 </html>

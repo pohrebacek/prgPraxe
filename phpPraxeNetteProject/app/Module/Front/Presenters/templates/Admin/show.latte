@@ -1,4 +1,8 @@
 {block content}
+<div class="addAdminPost">
+    <a n:href="generatePost!" class="btn btn-primary">Vygenerovat příspěvek</a>
+</div>
+
 <div class="WebSettings">
     <h1>Web Settings</h1>
     {control pageSettingsForm}
@@ -6,9 +10,8 @@
 
 <div class="ViewDatabaseOf">
     <h1>View databse of:</h1>
-    <a n:href="Admin:database dbName => likes" class="btn btn-primary">Likes</a>
-    <a n:href="Admin:database dbName => posts" class="btn btn-primary">Posts</a>
-    <a n:href="Admin:database dbName => comments" class="btn btn-primary">Comments</a>
-    <a n:href="Admin:database dbName => users" class="btn btn-primary">Users</a>
-    <a n:href="Admin:database dbName => settings" class="btn btn-primary">Settings</a>
+    <a n:href="AdminDb:likes" class="btn btn-primary">Post Likes</a>
+    <a n:href="AdminDb:posts" class="btn btn-primary">Posts</a>
+    <a n:href="AdminDb:comments" class="btn btn-primary">Comments</a>
+    <a n:href="AdminDb:users" class="btn btn-primary">Users</a>
 </div>

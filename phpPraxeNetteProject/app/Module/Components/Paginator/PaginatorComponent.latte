@@ -1,0 +1,11 @@
+{if $currentPage > 1}
+    <a n:href="changePage! 1" class="btn btn-outline-primary"><<</a>
+    <a n:href="changePage! $currentPage - 1" class="btn btn-outline-primary"><</a>
+{/if}
+
+<a>{$currentPage}/{$totalPages}</a>
+
+{if $currentPage < $totalPages}
+    <a n:href="changePage! $currentPage + 1" class="btn btn-outline-primary">></a>
+    <a n:href="changePage! $totalPages" class="btn btn-outline-primary">>></a>
+{/if}

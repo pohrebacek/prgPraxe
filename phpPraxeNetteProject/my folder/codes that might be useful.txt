@@ -1,0 +1,705 @@
+    public function getPostsByFilter(string $column, string $parameter)
+    {
+        if ($column == "id" && $parameter) {
+            return $this->database->table($this->postsRepository->getTable())->where($column, $parameter)->fetchAll();
+        }
+
+        if ($column == "user_id" && $parameter) //parameter je jméno a ne id, uživateli se totiž bude líp hledat podle jména a ne podle id
+        {
+            $user = $this->usersRepository->getRowByUsername($parameter); //takže podle jména najdu usera
+            if ($user) {
+                return $this->database->table($this->postsRepository->getTable())->where($column, $user->id)->fetchAll();   //a podle jeho id vyhledam record v db
+            }
+            return $this->database->table($this->postsRepository->getTable())->where($column, "")->fetchAll();  //vyhodí 0 záznamů pokud v se db nic nenašlo podle parametru
+        }
+        return $this->database->table($this->postsRepository->getTable())->where("{$column} LIKE ?", "%$parameter%")->fetchAll();   //i když dostane prázdnej string tak to vrátí všechno, protože LIKE vrací záznamy co obsahujou někde to cos zadal, proto u samotnáho WHERE to s "" vyhodí nic, protože se ptáš "vyhoď řádek co má v danym sloupci jenom hodnotu nic"
+    }
+
+
+
+
+//likeFacade.php
+        if ($column == "user_id" && $parameter) //parameter je jméno a ne id, uživateli se totiž bude líp hledat podle jména a ne podle id
+        {
+            $user = $this->usersRepository->getRowByUsername($parameter); //takže podle jména najdu usera
+            if ($user) {
+                return $this->database->table($this->likesRepository->getTable())->where($column, $user->id)->fetchAll(); //a podle jeho id vyhledam record postu v db
+            }
+            return $this->database->table($this->likesRepository->getTable())->where($column, "")->fetchAll();  //vyhodí 0 záznamů pokud v se db nic nenašlo podle parametru
+        }
+
+        if ($posts) {
+            $likesToRender = [];
+            foreach ($posts as $post) {
+                $foundLikeRecordsByPostId = $this->database->table($this->likesRepository->getTable())->where($column, $post->id)->fetchAll();
+                if ($foundLikeRecordsByPostId) {
+                    $likesToRender[] = $foundLikeRecordsByPostId;   //pokud v db table likes najdu like co má post_id jako id jednoho z postů co jsem našel podle jména, tak ho vyrenderuju, jinak to znamená že ten post nemá likes, takže ho nerederuju
+                }
+            }
+            bdump($likesToRender);
+            return $likesToRender;
+        }
+        return $this->database->table($this->likesRepository->getTable())->where($column, "")->fetchAll();  //vyhodí 0 záznamů pokud v se db nic nenašlo podle parametru
+
+
+
+
+
+//AdminPresenter.php
+        public function renderSearch($dbName): void    //zatim neni nikde využitá
+    {
+        $q = $this->getParameter("q");
+        bdump($dbName);
+        bdump("jou");
+    }
+
+    public function renderDatabase($dbName): void
+    {
+        $this->template->dbName = $dbName;
+        $q = $this->getParameter("q");
+        bdump($q);
+        bdump($dbName);
+        $data = [];
+        $data = $this->getAllByTableName($dbName);
+        bdump($data);
+        //$this->template->data = $data;
+
+        //DEBUG
+        foreach($data as $line){
+            $lineData = $line->toArray();
+            //bdump($lineData);
+            foreach ($lineData as $column => $value) {
+                bdump ("Column: $column, Value: $value");
+            }
+        }
+        $this->template->data = $this->filterColumns($data, $dbName);            
+    }
+
+
+        public function filterColumns($data, $dbName)
+    {
+        //funcke co podle jména db vyřadí nepotřebné parametry aby to vše bylo uživatelsky přívětivé
+        switch($dbName){
+            case "posts":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "user_id") {
+                            //$data[$column] = "Napsáno uživatelem: ";
+                            //$data[$value] = ($this->usersRepository->getRowById($value))->username;
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowById($value))->username;
+                        }
+                        //bdump("$column, $value");
+                    }
+                    $data[$index] = $lineData;
+                }         
+                //bdump($data);
+                return $data;
+
+            case "comments":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "name") {
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowByUsername($value))->username;
+                        } elseif ($column == "post_id") {
+                            $lineData["U postu: "] = ($this->postsRepository->getRowById($value))->title;
+                        }
+                    }
+                    $data[$index] = $lineData;
+                }
+                return $data;
+            case "likes":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "user_id") {
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowById($value))->username;
+                        } elseif ($column == "post_id") {
+                            $lineData["U postu: "] = ($this->postsRepository->getRowById($value))->title;
+                        }
+                    }
+                    $data[$index] = $lineData;
+                }
+                return $data;
+            case "users":
+                return $data;
+        }
+    }
+
+    public function renderDatabase($dbName): void
+    {
+        $this->template->dbName = $dbName;
+        $q = $this->getParameter("q");
+        bdump($q);
+        bdump($dbName);
+        $data = [];
+        $data = $this->getAllByTableName($dbName);
+        bdump($data);
+        //$this->template->data = $data;
+
+        //DEBUG
+        foreach($data as $line){
+            $lineData = $line->toArray();
+            //bdump($lineData);
+            foreach ($lineData as $column => $value) {
+                bdump ("Column: $column, Value: $value");
+            }
+        }
+        $this->template->data = $this->filterColumns($data, $dbName); 
+
+
+
+            
+    }
+
+
+
+//šipečka back na previous url
+    <a href="{$presenter->getSession()->getSection('navigation')->previousUrl}"></a>
+
+
+//PostPresenter.php
+	//public function handleReply(int $commentId): void
+	//{
+    //	bdump("Zavoláno s komentářem ID: $commentId");
+//
+    //	$this->showReplyCommentForm = "true";
+    //	$this->replyCommentId = $commentId;
+//
+    //	$this->redrawControl("commentFormSnippet-$commentId");
+	//	
+	//}
+//
+	//public function setReplyId(int $commentId): void
+	//{
+	//	bdump("set reply comment id: ".$commentId);
+	//	$this->replyCommentId = $commentId;
+	//	bdump("hehe: ".$this->replyCommentId);
+	//}
+
+//	public function handleReply(int $commentId): void
+//{
+//    bdump("handleReply triggered with ID $commentId");
+//
+//    // Zobrazit formulář, př.:
+//    $this->template->replyToCommentId = $commentId;
+//    $this->redrawControl('replyForm');
+//}
+
+//HomepagePresenter.php
+    public function renderOlddefault(): void
+    {	
+		$numberOfPosts = $this->postsRepository->getNumberOfRows();	//získá počet všech záznamů z tabulky posts
+		$this->template->postsArray = $this->postsRepository->getSomePostsFromEnd($this->postsPerPage, 0);	//vezme z konce tabulky (jedem tedy od nejnovější po nejstarší) "howMany" postů a přeskočí "from" postů, vezme to tedy posty se co se dané stránce zobrazí
+		$this->template->pages = $this->getNumberOfPages();
+
+		bdump($this->currentUser->hasPremiumAccess());
+
+		//DEBUG
+		bdump($numberOfPosts);
+		bdump((int) $numberOfPosts/$this->postsPerPage + $this->restPage($numberOfPosts));
+		bdump((int) $numberOfPosts/$this->postsPerPage);
+		bdump((int) $numberOfPosts%$this->postsPerPage);
+		bdump($this->restPage($numberOfPosts));
+    }
+
+	public function renderPage(int $page)	//vezme číslo page, na kterou má skočit
+	{
+		
+		$this->template->postsArray = $this->postsRepository->getSomePostsFromEnd($this->postsPerPage, ($page-1)*$this->postsPerPage);	//vezme "postsPerPage" postů od pozice page na kterou skočit -1 bcs se jede od 0
+		bdump($page);
+		$this->template->page =$page;	//tempplatu se předá aktuální page na kterou se skáče
+		$numberOfPosts = $this->postsRepository->getNumberOfRows();
+		$this->template->pages = $this->getNumberOfPages();
+		bdump((int) $numberOfPosts/$this->postsPerPage + $this->restPage($numberOfPosts));
+	}
+
+
+
+//Post:show.latte
+		<a n:href="reply! $comment->id" data-comment-id="{$comment->id}" class="btn btn-primary">Test Reply</a>
+
+		<a n:href="reply! $comment->id"
+		   class="btn btn-primary ajax"
+		   data-comment-id="{$comment->id}">
+		   Odpovědět
+		</a>
+
+
+/page.latte
+{block content}
+<h1>Homepage</h1>
+<a n:href="Edit:create" n:if="$user->isAllowed('post', 'add')" class="btn btn-primary">Vytvořit příspěvek</a>
+
+	
+	<div n:foreach="$postsArray as $post" class="post">
+        <h2><a n:href="Post:show $post->id">{$post->title}</a></h2>
+
+		<div n:if="$post->image"><img src="{$post->image}"></div>
+
+		<div class="date">{$post->created_at|date:'F j, Y'}</div>
+
+		<div>{$post->content|truncate:256|noescape}</div>
+	</div>
+    
+	{*{for $i = 0; $i < $pages; $i++}
+		<a n:href="Homepage:page page => $i+1">{$i+1}</a>
+	{/for}*}
+    
+
+    <div class="pageSelector">
+        {if $page > 1}
+        <a n:href="Homepage:page page => 1" class="btn btn-outline-primary"><<</a>
+        <a n:href="Homepage:page page => $page-1" class="btn btn-outline-primary"><</a>
+        {/if}
+        <a>{$page}/{$pages}</a>
+        {if $page < $pages}
+        <a n:href="Homepage:page page => $page+1" class="btn btn-outline-primary">></a>
+        <a n:href="Homepage:page page => $pages" class="btn btn-outline-primary">>></a>
+        {/if}
+    </div>
+
+    {control pageForm}
+
+
+//olddefault.latte
+{block content}
+<h1>Homepage</h1>
+<a n:href="Edit:create" n:if="$user->isAllowed('post', 'add')" class="btn btn-primary">Vytvořit příspěvek</a>
+
+
+
+	
+	<div n:foreach="$postsArray as $post" class="post">
+        <h2><a n:href="Post:show $post->id">{$post->title}</a></h2>
+
+		<div n:if="$post->image"><img src="{$post->image}"></div>
+
+		<div class="date">{$post->created_at|date:'F j, Y'}</div>
+
+		<div class="postContent">{$post->content|truncate:256|noescape}</div>
+	</div>
+	{*{for $page = 0; $page < $pages; $page++}
+		<a n:href="Homepage:page page => $page+1">{$page+1}</a>
+	{/for}*}
+
+
+
+
+	{control paginator}
+	<div class="pageSelector">
+        <a>1/{$pages}</a>
+        <a n:href="Homepage:page page => 2" class="btn btn-outline-primary">></a>
+        <a n:href="Homepage:page page => $pages" class="btn btn-outline-primary">>></a>
+    </div>
+
+    {control pageForm}
+
+
+
+
+//Post:show
+	{snippet "commentFormSnippet-$comment->id"}
+		{if $showReplyCommentForm == "true" && $comment->id == $replyCommentId}
+			Odpovědět uživateli {$comment->name}:
+			{control commentForm}
+		{/if}
+	{/snippet}
+
+    <a n:href="reply!, commentId => $comment->id" n:if="$user->isLoggedIn()" class="btn btn-primary">Odpovědět na komentář OLD</a>
+
+
+
+//RecordEditPresenter.php
+
+            case "settings":
+                $settings = $this->settingsFacade->getSettingsDTO($recordId);
+                if (!$settings) {
+                   $this->error('Settings not found');
+                }
+                $this->getComponent('settingsForm')
+                    ->setDefaults($settings);
+                break;
+    //SETTINGS FORM
+    protected function createComponentSettingsForm(): Form
+    {   
+        $form = new Form;
+        $form->addHidden('templateIsAdd', $this->templateIsAdd);
+        $form->addText("param", "Parametr")
+             ->setRequired("Toto pole je povinné")
+             ->setHtmlAttribute("class", "form-control");
+        $form->addText("value", "Hodnota parametru")
+             ->setRequired("Toto pole je povinné")
+             ->setHtmlAttribute("class", "form-control");
+
+        $form->onAnchor[] = function (Form $form) {
+            $values = $form->getValues('array');
+            if ($values['templateIsAdd'] == 'true') {  //nešla podmínka $this->templateIsAdd == "true" protože to bralo ten form a ne vlastnost ig    
+                $form->addSubmit('send', 'Přidat záznam')
+                     ->setHtmlAttribute("class", "btn btn-outline-primary");
+            } else {
+                $form->addSubmit('send', 'Uložit záznam')
+                     ->setHtmlAttribute("class", "btn btn-outline-primary");
+            }
+        };
+        echo ("Slouží pouze pro přidání do databáze, samotné nastavení se spravuje v kódu");
+
+        $form->onSuccess[] = [$this, 'settingsFormSucceeded'];
+
+        return $form;
+    }
+
+    public function settingsFormSucceeded(Form $form): void
+    {
+        ob_start(); //zapne výstupní bufffer, všechno co by se poslalo prohlížeči se dočasně uloží sem, je to tu protože tahle funkce ten buffer přeplnila (idk proč)
+        try {
+            $data = $form->getValues();
+            if ($data->templateIsAdd == "false") {
+                $recordId = $_GET['recordId'];
+                unset($data->templateIsAdd);
+                $this->settingsRepository->saveRow((array) $data, $recordId);
+            } else {
+                unset($data->templateIsAdd);
+                $this->settingsRepository->saveRow((array) $data, null);
+            }
+            ob_end_clean();
+            $this->redirect("Admin:database", $this->settingsRepository->getTable());
+
+        } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
+            ob_end_clean(); //vypne a vyprázdní buffer
+            $this->redirect("Admin:database", $this->settingsRepository->getTable());
+        } catch (Exception $e) {
+            $this->flashMessage("Zadejte platné údaje", "danger");
+        }
+        
+    }
+
+        //LIKE COMMENT FORM
+    protected function createComponentLikeCommentForm(): Form
+    {
+        $form = new Form;
+        $form->addHidden('templateIsAdd', $this->templateIsAdd);
+        $form->addText('comment_id', 'Id komentáře kterému like přidat')
+             ->setRequired("Toto pole je povinné")
+             ->setHtmlAttribute("type", "number")
+             ->setHtmlAttribute("class", "form-control");
+        return $form;
+    }
+
+
+
+    //LIKE FORM
+    protected function createComponentLikeForm(): Form
+    {
+        $form = new Form;
+        $form->addHidden('templateIsAdd', $this->templateIsAdd);
+        $form->addText("post_id", "Id postu kterému dát like")
+             ->setRequired("Toto pole je povinné")
+             ->setHtmlAttribute("type", "number")
+             ->setHtmlAttribute("class", "form-control");
+        $form->addText("user_id", "Jméno uživatele za kterého chcete dát like")
+             ->setRequired("Toto pole je povinné")
+             ->setHtmlAttribute("class", "form-control");
+
+        $form->onAnchor[] = function (Form $form) {
+            $values = $form->getValues('array');
+            if ($values['templateIsAdd'] == 'true') {  //nešla podmínka $this->templateIsAdd == "true" protože to bralo ten form a ne vlastnost ig    
+                $form->addSubmit('send', 'Přidat záznam')
+                     ->setHtmlAttribute("class", "btn btn-outline-primary");
+            } else {
+                $form->addSubmit('send', 'Uložit záznam')
+                     ->setHtmlAttribute("class", "btn btn-outline-primary");
+            }
+        };
+
+        $form->onSuccess[] = [$this, 'likeFormSucceeded'];
+        bdump("S");
+
+        return $form;
+    }
+
+    public function likeFormSucceeded(Form $form): void
+    {
+        try {
+            $data = $form->getValues();
+            if ($data->templateIsAdd == "false") {
+                
+                $recordId = $_GET['recordId'];
+                unset($data->templateIsAdd);
+                $this->likeRepository->saveRow((array) $data, $recordId);
+            } else {
+                
+                unset($data->templateIsAdd);
+                bdump($data);
+                $data->user_id = ($this->usersRepository->getRowByUsername($data->user_id))->id;
+                $this->likeRepository->saveRow((array) $data, null);
+            }
+            $this->redirect("AdminDb:likes");
+        } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
+            $this->redirect("AdminDb:likes");
+        } catch (Exception $e) {
+            $this->flashMessage("Zadejte platné údaje", "danger");
+        }
+        
+    }
+
+//AdminDbPresenter.php
+    public function renderLikesComments(): void
+    {
+        $data = [];
+        $q = $this->getParameter("q");
+        if (isset($_GET["filter"]))
+        {
+            $filter = $_GET["filter"];
+            bdump($filter);
+            $data = $this->likeCommentFacade->getLikesByFilter($filter, $q);
+        } else {
+            $data = $this->getAllByTableName("likes_comments");
+        }
+
+        if ($q)
+        {
+            $this->template->filterInput = $q;
+        }
+        $this->template->data = $this->likeCommentFacade->filterLikesData($data);
+    }
+
+        public function getRecordsByFilter(string $tableName, $column, $parameter) {    //rozdělit funkci do facades, tahle funkce nebude ale každá facade bude mít svoji verzi táhle fce
+        bdump($tableName);
+        bdump($column);
+        bdump($parameter);
+        if ($column == "id" && $parameter) {
+            return $this->database->table($tableName)->where($column, $parameter)->fetchAll();
+        }
+
+        if ($column == "user_id" && $parameter)
+        {
+            $user = $this->usersRepository->getRowByUsername($parameter);
+            if ($user) {
+                return $this->database->table("posts")->where($column, $user->id)->fetchAll();
+            }
+            return $this->database->table("posts")->where($column, "")->fetchAll();
+        }
+
+        if($column == "post_id" && $parameter)
+        {
+            $user = $this->usersRepository->getRowByUsername($parameter);
+            if ($user) {
+                return $this->database->table("posts")->where($column, $user->id)->fetchAll();
+            }
+            return $this->database->table("posts")->where($column, "")->fetchAll();
+        }
+        return $this->database->table($tableName)->where("{$column} LIKE ?", "%$parameter%")->fetchAll();
+    }
+
+
+
+    public function filterColumns($data, $dbName)   //postupně přepisuju do fasád, pak smažu, už se nepoužívá
+    {
+        //funcke co podle jména db vyřadí nepotřebné parametry aby to vše bylo uživatelsky přívětivé
+        switch($dbName){
+            case "posts":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "user_id") {
+                            //$data[$column] = "Napsáno uživatelem: ";
+                            //$data[$value] = ($this->usersRepository->getRowById($value))->username;
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowById($value))->username;
+                        }
+                        //bdump("$column, $value");
+                    }
+                    $data[$index] = $lineData;
+                }         
+                //bdump($data);
+                return $data;
+
+            case "comments":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "name") {
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowByUsername($value))->username;
+                        } elseif ($column == "post_id") {
+                            $lineData["U postu: "] = ($this->postsRepository->getRowById($value))->title;
+                        }
+                    }
+                    $data[$index] = $lineData;
+                }
+                return $data;
+            case "likes":
+                foreach($data as $index => $line){
+                    $lineData = $line->toArray();
+                    foreach($lineData as $column => $value) {
+                        if ($column == "user_id") {
+                            $lineData["Od uživatele: "] = ($this->usersRepository->getRowById($value))->username;
+                        } elseif ($column == "post_id") {
+                            $lineData["U postu: "] = ($this->postsRepository->getRowById($value))->title;
+                        }
+                    }
+                    $data[$index] = $lineData;
+                }
+                return $data;
+            case "users":
+                return $data;
+            case "settings":
+                return $data;
+        }
+    }
+
+//database.latte
+{block content}
+
+<div class="goBack">
+    <a n:href="Admin:show">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4" width="30" height="30">
+            <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+        </svg>
+        Zpět
+    </a>
+<div>
+
+
+<h2>{$dbName} database</h2>
+<h3>Počet záznamů: {count($data)}</h3>
+<div class="filterDBrecords">
+    {*<a href="{link Admin:search dbName => $dbName}">Test</a>*}
+
+    <h3><a n:href="RecordEdit:add dbName => $dbName" class="btn btn-primary">Přidat záznam</a></h3>
+    <form action="{link Admin:database dbName => $dbName}" method="GET" class="search">
+        <input type="hidden" name="dbName" value="{$dbName}">
+        <input type="search" name="q" placeholder="Hledat záznam..." class="form-control"/>
+        <button type="submit" class="btn btn-outline-dark rounded-circle p-1"> 
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="25" height="20">
+              <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+           </svg>
+        </button>
+    </form>
+    <button class="btn btn-primary">pico1</button>
+</div>
+
+
+{foreach $data as $line}
+    <div class="border border-primary">
+        {foreach $line as $column => $value}    
+            {var $isVisible = ($column|shouldDisplay:$dbName)}
+            {if $column == "id"}
+                {var $recordId = $value}
+                {if $dbName == "posts"}
+                    <div class="record">{$column} = {$value}</div>
+                {/if}
+            {elseif $column == "user_id" || $column == "name"}
+                {var $userId = $value}
+            {elseif $column == "post_id"}
+                {var $postId = $value}
+            {elseif $column == "U postu: "}
+                <div class="record">{$column} = <a n:href="RecordEdit:edit recordId => $postId, dbName => 'posts'">{$value}</a></div>
+            {elseif $column == "Od uživatele: "}
+                <div class="record">{$column} = <a n:href="RecordEdit:edit recordId => $userId, dbName => 'users'">{$value}</a></div>            
+            {elseif $isVisible}
+                <div class="record">{$column} = {$value}</div>
+            {/if}
+        {/foreach}
+        <div class="DBactions">
+            <a n:href="RecordEdit:edit recordId => $recordId, dbName => $dbName" class="btn btn-outline-primary">Edit Record</a>
+            <a n:href="Admin:delete recordId => $recordId, dbName => $dbName" class="btn btn-outline-danger" onclick="return confirm('Opravdu chcete smazat tento záznam?')">Delete Record</a>
+            <p></p>
+        </div>
+    </div>
+{/foreach}
+
+
+
+
+
+
+//LikeCommentFacade.php
+    public function getLikesByFilter(string $column, string $parameter)
+    {
+        if ($column == "user_id" && $parameter) //parameter je jméno a ne id, uživateli se totiž bude líp hledat podle jména a ne podle id
+        {
+            $user = $this->usersRepository->getRowByUsername($parameter); //takže podle jména najdu usera
+            if ($user) {
+                return $this->database->table($this->likesCommentsRepository->getTable())->where($column, $user->id)->fetchAll(); //a podle jeho id vyhledam record postu v db
+            }
+            return $this->database->table($this->likesCommentsRepository->getTable())->where($column, "")->fetchAll();  //vyhodí 0 záznamů pokud v se db nic nenašlo podle parametru
+        }
+
+        if ($column == "comment_id" && $parameter)
+        {
+            $comments = $this->database->table($this->commentsRepository->getTable())->where("title LIKE ?", "%$parameter%")->fetchAll();
+            bdump($comments);
+            if ($comments) {
+                $commentsToRender = [];
+                foreach ($comments as $post) {
+                    $foundCommentRecordsByPostId = $this->database->table($this->likesCommentsRepository->getTable())->where($column, $post->id)->fetchAll();
+                    if ($foundCommentRecordsByPostId) {
+                        $commentsToRender = $foundCommentRecordsByPostId;   //pokud v db table comments najdu comment co má post_id jako id jednoho z postů co jsem našel podle jména, tak ho vyrenderuju, jinak to znamená že ten post nemá commenty, takže ho nerederuju
+                    }
+                }
+                bdump($commentsToRender);
+                return $commentsToRender;
+            }
+            return $this->database->table($this->likesCommentsRepository->getTable())->where($column, "")->fetchAll();  //vyhodí 0 záznamů pokud v se db nic nenašlo podle parametru
+
+        }
+        return $this->database->table($this->likesCommentsRepository->getTable())->where("{$column} LIKE ?", "%$parameter%")->fetchAll();
+    }
+
+//likes_comments.latte
+{block content}
+
+<div class="goBack">
+    <a n:href="Admin:show">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4" width="30" height="30">
+            <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+        </svg>
+        Zpět
+    </a>
+<div>
+
+
+<h2>likes comments database</h2>
+<h3>Počet záznamů: {count($data)}</h3>
+<div class="filterDBrecords">
+    {*<a href="{link Admin:search dbName => $dbName}">Test</a>*}
+
+    <h3><a n:href="RecordEdit:add dbName => 'likes_comments'" class="btn btn-primary">Přidat záznam</a></h3>
+    <form method="GET" action="{link AdminDb:likes}" class="search">
+        <div class="input-group">
+            <select name="filter" class="form-select">
+                <option value="post_id" n:attr="selected => isset($_GET['filter']) && $_GET['filter'] == 'post_id'">U postu</option>
+                <option value="user_id" n:attr="selected => isset($_GET['filter']) && $_GET['filter'] == 'user_id'">Od uživatele</option>
+            </select>
+            <input type="hidden" name="dbName" value="posts">
+            <input type="search" name="q" {if isset($filterInput)} value="{$filterInput}" {/if} placeholder="Hledat záznam..." class="form-control"/>
+            <button type="submit" class="btn btn-primary">Hledat</button>
+        </div>
+    </form>
+</div>
+
+
+{foreach $data as $line}
+    <div class="border border-primary">
+        {foreach $line as $column => $value}   
+            {if $column == "id"}
+                {var $recordId = $value}
+            {elseif $column == "user_id" || $column == "name"}
+                {var $userId = $value}
+            {elseif $column == "comment_id"}
+                {var $commentId = $value}
+            {elseif $column == "U komentáře: "}
+                <div class="record">{$column} = <a n:href="RecordEdit:edit recordId => $commentId, dbName => 'comments'">{$value}</a></div>
+            {elseif $column == "Od uživatele: "}
+                <div class="record">{$column} = <a n:href="RecordEdit:edit recordId => $userId, dbName => 'users'">{$value}</a></div>
+            {/if}
+        {/foreach}
+        <div class="DBactions">
+            <a n:href="Admin:delete recordId => $recordId, dbName => 'likes_comments'" class="btn btn-outline-danger" onclick="return confirm('Opravdu chcete smazat tento záznam?')">Delete Record</a>
+            <p></p>
+        </div>
+    </div>
+{/foreach}
+
+

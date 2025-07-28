@@ -16,6 +16,8 @@ use App\Module\Model\Post\PostFacade;
 use App\Module\Model\Comment\CommentFacade;
 use App\Module\Model\Settings\SettingsFacade;
 use App\Module\Model\Like\LikeFacade;
+use App\Service\CurrentUserService;
+use App\Module\Model\LikeComment\LikeCommentFacade;
 
 final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou nadepsaná komentářem "POST/COMMENT... FORM"
 {
@@ -32,17 +34,23 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
         private PostFacade $postFacade,
         private CommentFacade $commentFacade,
         private LikeFacade $likeFacade,
-        private SettingsFacade $settingsFacade
+        private SettingsFacade $settingsFacade,
+        private LikeCommentFacade $likeCommentFacade,
+        private CurrentUserService $currentUser
     ) {}
 
     public function renderAdd($dbName): void
     {
+        if (!$this->currentUser->isAdmin()) {
+            $this->flashMessage("Na tuto adresu nemáte přístup!", "danger");
+            $this->redirect("Homepage:");
+        }
+
         $this->template->dbNames = [
             'posts' => "postForm",
             'comments' => "commentForm",
             'likes' => "likeForm",
-            'users' => 'userForm',
-            'settings' => 'settingsForm'
+            'users' => 'userForm'
         ];
         $this->templateIsAdd = "true";
         $this->template->dbName = $dbName;
@@ -50,6 +58,10 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
     }
 
     public function renderChangePassword($userId, $dbName){
+        if (!$this->currentUser->isAdmin()) {
+            $this->flashMessage("Na tuto adresu nemáte přístup!", "danger");
+            $this->redirect("Homepage:");
+        }
         $this->template->userId = $userId;
         $this->template->dbName = $dbName;
 
@@ -78,62 +90,59 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
         $data = $form->getValues();
         $data->password = $this->passwords->hash($data->password);
         if (!$this->passwords->verify($data->passwordCheck, $data->password)) {
-            $form->addError("Vámi zadaná hesla musí být stejná");
+            $this->flashMessage("Hesla nejsou stejná", "danger");
         } else {
+            $this->flashMessage("Hesla úspěšně změněna", "success");
             unset($data->passwordCheck);
             $this->usersRepository->saveRow((array) $data, $_GET["userId"]);
-            $this->redirect("Admin:database", $this->usersRepository->getTable());
+            $this->redirect("AdminDb:users");
         }
     }
 
     public function renderEdit($recordId, $dbName): void
     {
+        if (!$this->currentUser->isAdmin()) {
+            $this->flashMessage("Na tuto adresu nemáte přístup!", "danger");
+            $this->redirect("Homepage:");
+        }
+
         $this->template->dbNames = [
             'posts' => "postForm",
             'comments' => "commentForm",
-            'likes' => "likeForm",
-            'users' => 'userForm',
-            'settings' => 'settingsForm'
+            'users' => 'userForm'
         ];
         $this->template->dbName = $dbName;
+        $this->template->isCommentReply = null;
         
 
         switch ($dbName) {
             case "posts":
                 $post = $this->postFacade->getPostDTO($recordId);
+                $postArray = get_object_vars($post);
+                $postArray["username"] = $this->postFacade->getOwnerUserName($post);
+                bdump($postArray);
                 if (!$post) {
                    $this->error('Post not found');
                 }
                 $this->getComponent('postForm')
-                    ->setDefaults($post);
+                    ->setDefaults($postArray);
                 break;
 
             case "comments":
                 $comment = $this->commentFacade->getCommentDTO($recordId);
                 if (!$comment) {
                    $this->error('Comment not found');
-                }
+                } 
+                $this->template->replyToId = $comment->replyTo ?? null; //Pokud $comment->replyTo existuje, uloží ho. Pokud neexistuje (je null), uloží null
+                $this->template->replyToPreview = $comment->replyTo //Pokud $comment->replyTo není null, zavolá getReplyToPreview() a uloží výsledek. Pokud je null, uloží jen null.
+                    ? $this->commentFacade->getReplyToPreview($comment->replyTo)
+                    : null;
+                $this->template->isCommentReply = $comment->replyTo; 
+                bdump($comment->replyTo);  
                 $this->getComponent('commentForm')
                     ->setDefaults($comment);
                 break;
 
-            case "likes":
-                $like = $this->likeFacade->getLikeDTO($recordId);
-                if (!$like) {
-                   $this->error('Like not found');
-                }
-                $this->getComponent('likeForm')
-                    ->setDefaults($like);
-                break;
-
-            case "settings":
-                $settings = $this->settingsFacade->getSettingsDTO($recordId);
-                if (!$settings) {
-                   $this->error('Settings not found');
-                }
-                $this->getComponent('settingsForm')
-                    ->setDefaults($settings);
-                break;
 
             case "users":
                 $user = $this->userFacade->getUserDTO($recordId);
@@ -144,6 +153,7 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
                     ->setDefaults($user);
                 break;
           }
+
     }
 
 
@@ -155,7 +165,7 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
 
         $form->addHidden('templateIsAdd', $this->templateIsAdd);
 
-        $form->addText("user_id", "Jméno uživatele za kterého přidat post: ")
+        $form->addText("username", "Jméno uživatele za kterého přidat post: ")
              ->setRequired("Toto pole je povinné")
              ->setHtmlAttribute("class", "form-control");
         $form->addText('title', 'Titulek: ')
@@ -224,24 +234,31 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
         {
             $data = (array) $form->getValues();
             $data["image"] = $this->getImageFromForm();
+            bdump($data);
         
-            if ($data["templateIsAdd"] == "false") {
+            if ($data["templateIsAdd"] == "false") {    //záznam se mění
                 $recordId = $_GET['recordId'];
+                
                 unset($data["templateIsAdd"]);
+                $data["user_id"] = ($this->usersRepository->getRowByUsername($data["username"]))->id;
+                unset($data["username"]);
                 $this->postsRepository->saveRow($data, $recordId);
         
             } else {
-                $data["user_id"] = ($this->usersRepository->getRowByUsername($data["user_id"]))->id;
+                $data["user_id"] = ($this->usersRepository->getRowByUsername($data["username"]))->id;
+                
+                unset($data["username"]);
                 unset($data["templateIsAdd"]);
                 $post = $this->postsRepository
                     ->saveRow($data, null);
             }
               
-            $this->redirect("Admin:database", $this->postsRepository->getTable());
+            $this->redirect("AdminDb:posts");
         } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
-            $this->redirect("Admin:database", $this->postsRepository->getTable());
+            $this->redirect("AdminDb:posts");
         } catch (Exception $e) {
-            $form->addError("Zadejte platné údaje");
+            bdump($e);
+            $this->flashMessage("Zadejte platné údaje", "danger");
         }
 
         
@@ -261,7 +278,7 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
              ->setRequired("Toto pole je povinné")
              ->setHtmlAttribute("type", "number")
              ->setHtmlAttribute("class", "form-control");
-        $form->addText("ownerUser_id", "Jméno uživatele za kterého napsat comment")
+        $form->addText("name", "Jméno uživatele za kterého napsat comment")
              ->setRequired("Toto pole je povinné")
              ->setHtmlAttribute("class", "form-control");
         $form->addTextArea('content', 'Komentář:')
@@ -296,7 +313,8 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
         {
             bdump($data->templateIsAdd);
 
-		    $user = $this->usersRepository->getRowByUsername($data->ownerUser_id);
+		    $user = $this->usersRepository->getRowByUsername($data->name);
+            $user = $this->userFacade->getUserDTO($user->id);
             if ($user == null){
                 throw new Exception;
             }
@@ -307,8 +325,11 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
 		
 		    if($data->templateIsAdd == "false") {
                 $recordId = $_GET['recordId'];
+                
 		    	unset($data->templateIsAdd);	//tady se smaže to hidden vlastnost aby později nedělala bordel
-		    	$this->commentsRepository->saveRow((array)$data, $recordId);
+		    	$data->ownerUser_id = $user->id;
+                $data->email = $user->email;
+                $this->commentsRepository->saveRow((array)$data, $recordId);
 		    	$comment = $this->commentFacade->getCommentDTO($recordId);
 		    }
             else {
@@ -322,16 +343,18 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
 		    		    "ownerUser_id" => $data->ownerUser_id
 		    	    ], null);
 		        bdump($comment);
+
+                
             }
 
 		    if ($comment){
-		    	$this->flashMessage("Děkuji za komentář", "success");
-            	$this->redirect("Admin:database", $this->commentsRepository->getTable());
+            	$this->redirect("AdminDb:comments");
 		    }
         } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
-            $this->redirect("Admin:database", $this->commentsRepository->getTable());
+            $this->redirect("AdminDb:comments");
         } catch (Exception $e) {
-            $form->addError("Zadejte platné údaje");
+            bdump($e);
+            $this->flashMessage("Zadejte platné údaje", "danger");
         }
         
         
@@ -340,58 +363,7 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
 
 
 
-    //LIKE FORM
-    protected function createComponentLikeForm(): Form
-    {
-        $form = new Form;
-        $form->addHidden('templateIsAdd', $this->templateIsAdd);
-        $form->addText("post_id", "Id postu kterému dát like")
-             ->setRequired("Toto pole je povinné")
-             ->setHtmlAttribute("type", "number")
-             ->setHtmlAttribute("class", "form-control");
-        $form->addText("user_id", "Jméno uživatele za kterého chcete dát like")
-             ->setRequired("Toto pole je povinné")
-             ->setHtmlAttribute("class", "form-control");
 
-        $form->onAnchor[] = function (Form $form) {
-            $values = $form->getValues('array');
-            if ($values['templateIsAdd'] == 'true') {  //nešla podmínka $this->templateIsAdd == "true" protože to bralo ten form a ne vlastnost ig    
-                $form->addSubmit('send', 'Přidat záznam')
-                     ->setHtmlAttribute("class", "btn btn-outline-primary");
-            } else {
-                $form->addSubmit('send', 'Uložit záznam')
-                     ->setHtmlAttribute("class", "btn btn-outline-primary");
-            }
-        };
-
-        $form->onSuccess[] = [$this, 'likeFormSucceeded'];
-        bdump("S");
-
-        return $form;
-    }
-
-    public function likeFormSucceeded(Form $form): void
-    {
-        try {
-            $data = $form->getValues();
-            if ($data->templateIsAdd == "false") {
-                $recordId = $_GET['recordId'];
-                unset($data->templateIsAdd);
-                $this->likeRepository->saveRow((array) $data, $recordId);
-            } else {
-                unset($data->templateIsAdd);
-                bdump($data);
-                $data->user_id = ($this->usersRepository->getRowByUsername($data->user_id))->id;
-                $this->likeRepository->saveRow((array) $data, null);
-            }
-            $this->redirect("Admin:database", $this->likeRepository->getTable());
-        } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
-            $this->redirect("Admin:database", $this->likeRepository->getTable());
-        } catch (Exception $e) {
-            $form->addError("Zadejte platné údaje");
-        }
-        
-    }
 
     //USER FORM
     protected function createComponentUserForm(): Form
@@ -456,89 +428,39 @@ final class RecordEditPresenter extends BasePresenter   //jednotlivé formy jsou
             if ($data->templateIsAdd == "false") {
                 $recordId = $_GET['recordId'];  //NIKDE JINDE NEPOUŽÍVAT TADY V TOM FORMU UŽ
                 if (($foundUserByName && $foundUserByName->id != $recordId) || ($foundUserByEmail && $foundUserByEmail->id != $recordId)) {
-                    $form->addError('Tento účet již existuje');
+                    $this->flashMessage('Tento účet již existuje', "danger");
                 } else {
+                    
                     unset($data->templateIsAdd);
                     $this->usersRepository->saveRow((array) $data, $recordId);
-                    $this->redirect("Admin:database", $this->usersRepository->getTable());
+                    $this->redirect("AdminDb:users");
                 }
             } else {
                 $data->password = $this->passwords->hash($data->password);
                 if ($foundUserByName || $foundUserByEmail) {
-                    $form->addError('Tento účet již existuje');
+                    $this->flashMessage('Tento účet již existuje', "danger");
                 }
                 elseif (!$this->passwords->verify($data->passwordCheck, $data->password)) { //funkce verify zkontroluje hash a zadaný heslo, samotná funkce hash totiž udělá jinej hash i ze stejných slov
                     bdump($data);
-                    $form->addError('Vámi zadaná hesla musí být stejná');
+                    $this->flashMessage('Vámi zadaná hesla musí být stejná', "danger");
                 } else {
+                    
                     unset($data->passwordCheck);
                     unset($data->templateIsAdd);
                     bdump($data);
                     $this->usersRepository->saveRow((array) $data, null);
-                    $this->redirect("Admin:database", $this->usersRepository->getTable());        
+                    $this->redirect("AdminDb:users");        
                 }
             }
 
         } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
-            $this->redirect("Admin:database", $this->usersRepository->getTable());
+            $this->redirect("AdminDb:users");
         } catch (Exception $e) {
-            $form->addError("Zadejte platné údaje");
+            $this->flashMessage("Zadejte platné údaje", "danger");
         }
 
     }
 
 
-    //SETTINGS FORM
-    protected function createComponentSettingsForm(): Form
-    {   
-        $form = new Form;
-        $form->addHidden('templateIsAdd', $this->templateIsAdd);
-        $form->addText("param", "Parametr")
-             ->setRequired("Toto pole je povinné")
-             ->setHtmlAttribute("class", "form-control");
-        $form->addText("value", "Hodnota parametru")
-             ->setRequired("Toto pole je povinné")
-             ->setHtmlAttribute("class", "form-control");
 
-        $form->onAnchor[] = function (Form $form) {
-            $values = $form->getValues('array');
-            if ($values['templateIsAdd'] == 'true') {  //nešla podmínka $this->templateIsAdd == "true" protože to bralo ten form a ne vlastnost ig    
-                $form->addSubmit('send', 'Přidat záznam')
-                     ->setHtmlAttribute("class", "btn btn-outline-primary");
-            } else {
-                $form->addSubmit('send', 'Uložit záznam')
-                     ->setHtmlAttribute("class", "btn btn-outline-primary");
-            }
-        };
-        echo ("Slouží pouze pro přidání do databáze, samotné nastavení se spravuje v kódu");
-
-        $form->onSuccess[] = [$this, 'settingsFormSucceeded'];
-
-        return $form;
-    }
-
-    public function settingsFormSucceeded(Form $form): void
-    {
-        ob_start(); //zapne výstupní bufffer, všechno co by se poslalo prohlížeči se dočasně uloží sem, je to tu protože tahle funkce ten buffer přeplnila (idk proč)
-        try {
-            $data = $form->getValues();
-            if ($data->templateIsAdd == "false") {
-                $recordId = $_GET['recordId'];
-                unset($data->templateIsAdd);
-                $this->settingsRepository->saveRow((array) $data, $recordId);
-            } else {
-                unset($data->templateIsAdd);
-                $this->settingsRepository->saveRow((array) $data, null);
-            }
-            ob_end_clean();
-            $this->redirect("Admin:database", $this->settingsRepository->getTable());
-
-        } catch (AbortException $e) {   //bez tohohle to bralo exception i když vše bylo ok
-            ob_end_clean(); //vypne a vyprázdní buffer
-            $this->redirect("Admin:database", $this->settingsRepository->getTable());
-        } catch (Exception $e) {
-            $form->addError("Zadejte platné údaje");
-        }
-        
-    }
 }

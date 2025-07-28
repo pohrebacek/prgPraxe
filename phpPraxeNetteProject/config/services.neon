@@ -26,3 +26,20 @@ services:
 	- App\Module\Model\Settings\SettingsRepository
 	- App\Module\Model\Settings\SettingsFacade
 	- App\Module\Model\Settings\SettingsMapper
+
+	- App\Module\Model\PremiumPurchase\PremiumPurchaseRepository
+	- App\Module\Model\PremiumPurchase\PremiumPurchaseFacade
+	- App\Module\Model\PremiumPurchase\PremiumPurchaseMapper
+
+	- App\Service\CurrentUserService
+
+	- App\Module\Model\LikeComment\LikesCommentsRepository
+	- App\Module\Model\LikeComment\LikeCommentFacade
+	- App\Module\Model\LikeComment\LikeCommentMapper
+
+	- App\Module\Model\ExternalPost\ExternalPostFacade
+	- App\Module\Model\ExternalPost\ExternalPostMapper
+	- App\Module\Model\ExternalPost\ExternalPostsRepository
+
+	blogFeedCacheStorage:
+		factory: Nette\Caching\Cache(@cache.storage, BlogFeedCache)
