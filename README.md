@@ -38,5 +38,5 @@ Projekty jsou řazeny chronologicky.
 - Jedná se o webovou aplikaci blogu
 - Na aplikaci jsem pracoval v Plzeňské firmě RTsoft, kde jsem byl na praxích
 - Blog jsem programoval v PHP frameworku Nette
-- Na aplikaci jsem dělal vše sám a díky tomu jsem se na tomto testovacím projektu hodně naučil
-- Na projektu stále pracuji abych ho dostal do fáze, kdy budou od firmy splněny všechny požadavky
+- Na aplikaci jsem dělal vše sám a díky tomu jsem se na tomto testovacím projektu hodně naučil (menší front-end, práce s db, přemýšlení do budoucna při psaní kódu, úprava kódu)
+- Zatím můj největší projekt
