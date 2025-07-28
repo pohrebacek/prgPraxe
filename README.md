@@ -34,11 +34,11 @@ Projekty jsou řazeny chronologicky.
 - Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
 - Projekt ovšem nemá nijak udělané GUI, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
 
-#simpleTextSplitter
+# simpleTextSplitter
 - Jedná se o python scritp, který rozdělí předný text do textových souborů podle počtu znaků zadaných uživatelem.
 - Script jsem napsal protože nemám předplaceného chatGPT, a omylem jsem do jednoho důležitého chatu (který byl hodně dlouhý) dal přílohu. Bot tedy po nějakém čase přestane psát protože mi došel limit a já si chtěl naši konverzaci přepsat do jiného chatu. Konverzace ale byla moc dlouhá pro zprávu a tak jsem ji nějak potřeboval rozdělit.
 
-#SongSelector
+# SongSelector
 - Další python script. Tentokrát slouží k mému hraní na kytaru.
 - Někdy se stává že nevím jakou písničku si zahrát nebo se naučit.
 - Script tedy slouží k tomu, že si do něj nahraju svoje oblíbené písničky a pak si zvolím kolik jich chci náhodně vybrat.
