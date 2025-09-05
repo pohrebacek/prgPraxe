@@ -32,7 +32,7 @@ Projekty jsou řazeny chronologicky.
 - Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
 - Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
 - Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
-- Projekt ovšem nemá nijak udělané GUI, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
+- Projekt ovšem nemá nějak zajímavý front end, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
 
 # simpleTextSplitter
 - Jedná se o python scritp, který rozdělí předný text do textových souborů podle počtu znaků zadaných uživatelem.
