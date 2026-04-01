@@ -28,7 +28,6 @@ Projekty jsou řazeny chronologicky.
 - Jelikož se jedná o jeden z prvních projektů tak je vše v jednom souboru (tudíž totální nepřehlednost).
 
 # chatApp
-- Má jít o chatovací aplikaci ve které jsem zatím stihl udělat ukládání chat rooms k jednotlivým uživatelům
 - Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
 - Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
 - Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
