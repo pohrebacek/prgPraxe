@@ -53,3 +53,8 @@ Projekty jsou řazeny chronologicky.
 - Zatím můj největší projekt
 
 # Star Wars Web V4
+- Vylepšená verze mého původního Star Wars webu
+- Projekt je naprogramován ve frameworku Nette v jazyce PHP
+- Jednotlivá díla se zde přidávají přímo na stránce a ukládají se do databáze
+- Projekt ještě není kompletní (označování zda jsem dílo zkouknul stále chybí, stejně jako přívětivější front end), ale možnosti na přidání, smazání a upravení díla jsou naimplementována.
+- Při programování jsem si také poradil s tim, jak řadit časově díla, pokud budu chtít vložit nové dílo mezi dvě existující.
