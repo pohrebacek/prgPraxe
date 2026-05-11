@@ -27,12 +27,6 @@ Projekty jsou řazeny chronologicky.
 - Procvičil jsem si zde práci s OOP (i když oop v pythonu není nejlepší volba), práci s menší databází a celkově vývoj něčeho trochu většího
 - Jelikož se jedná o jeden z prvních projektů tak je vše v jednom souboru (tudíž totální nepřehlednost).
 
-# chatApp
-- Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
-- Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
-- Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
-- Projekt ovšem nemá nějak zajímavý front end, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
-
 # simpleTextSplitter
 - Jedná se o python scritp, který rozdělí předný text do textových souborů podle počtu znaků zadaných uživatelem.
 - Script jsem napsal protože nemám předplaceného chatGPT, a omylem jsem do jednoho důležitého chatu (který byl hodně dlouhý) dal přílohu. Bot tedy po nějakém čase přestane psát protože mi došel limit a já si chtěl naši konverzaci přepsat do jiného chatu. Konverzace ale byla moc dlouhá pro zprávu a tak jsem ji nějak potřeboval rozdělit.
@@ -44,6 +38,12 @@ Projekty jsou řazeny chronologicky.
 - Mohu si písničky i mazat a zobrazit.
 - Písničky se ukládají jednoduše do csv souborů.
 - Je to dost jednoduchý script, ale často ho používám.
+
+# chatApp
+- Jedná se o základní chatovací aplikaci. Uživatel může vytvořit chatroom a pozvat ostatní uživatele. Vlastník dané chatroom může ostatní vyhodit a ostatní mohou pozvat další       uživatele.
+- Jedná se o první Python projekt který jsem si rozdělil do složek a souborů, aby vše nebyl v jednom souboru. Projekt je tak přehlednější. 
+- Tímto projektem jsem se naučil práci s Flasekem, Socketio a sqlalchemy
+- Projekt ovšem nemá nějak zajímavý front end, nastyloval jsem pouze důležité věci, soustředil jsem se na funkčnost appky.
 
 # phpPraxeNetteProject
 - Jedná se o webovou aplikaci blogu
