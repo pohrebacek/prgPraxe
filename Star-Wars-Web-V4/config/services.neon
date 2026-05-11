@@ -1,0 +1,19 @@
+services:
+	- App\Core\RouterFactory::createRouter
+
+	- App\Model\Era\EraFacade
+	- App\Model\Era\EraMapper
+	- App\Model\Era\ErasRepository
+
+	- App\Model\Media\MediaFacade
+	- App\Model\Media\MediaMapper
+	- App\Model\Media\MediaRepository
+
+
+search:
+	-	in: %appDir%
+		classes:
+			- *Facade
+			- *Factory
+			- *Repository
+			- *Service
