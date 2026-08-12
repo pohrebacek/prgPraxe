@@ -58,3 +58,13 @@ Projekty jsou řazeny chronologicky.
 - Jednotlivá díla se zde přidávají přímo na stránce a ukládají se do databáze
 - Projekt ještě není kompletní (označování zda jsem dílo zkouknul stále chybí, stejně jako přívětivější front end), ale možnosti na přidání, smazání a upravení díla jsou naimplementována.
 - Při programování jsem si také poradil s tim, jak řadit časově díla, pokud budu chtít vložit nové dílo mezi dvě existující.
+
+# FinanceWeb
+- První čistě FE projekt
+- Dospěl jsem k názoru že je třeba se naučit FE a tak jsem si vybral cizí design který jsem se rozhodl zreprodukovat
+- Soustředil jsem se čistě na design bez responzivity, abych se naučil přenést design do kódu
+
+# GeorgeDeskotop
+- Další FE projekt
+- Využil jsem zkušenosti z FinanceWeb a přidal jsem kompletní responzivitu
+- Projekt mě hodně naučil a v tvorbě UI jsem se extrémně posunul.
