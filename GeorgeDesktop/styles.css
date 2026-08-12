@@ -1,0 +1,2292 @@
+html {
+  font-size: 8px;
+  font-family: sans-serif;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.help-button {
+  display: flex;
+  position: fixed;
+  bottom: 20px;
+  right: 28px;
+  z-index: 1000;
+  color: white;
+  background-color: #353543;
+  font-size: 2.5rem;
+  padding: 2rem;
+  border-radius: 50%;
+  border: 2px solid #777788;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.help-button:hover {
+  background-color: #2f2f3a;
+}
+
+.help-dialog {
+  display: none;
+  flex-direction: column;
+  width: 298px;
+  height: 250px;
+  bottom: 80px;
+  right: 70px;
+  position: fixed;
+  border: 1px solid #3a3a44;
+  border-radius: 10px;
+  background-color: #1f1f29;
+}
+
+.open {
+  display: flex;
+}
+
+.help-dialog-text {
+  background-color: #3a3a44;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+  padding: 1rem 10rem 3rem 2rem;
+}
+
+.help-dialog h1 {
+  font-weight: 500;
+  font-size: 2.5rem;
+}
+
+.help-dialog p {
+  font-size: 2rem;
+  margin-top: -8px;
+}
+
+.help-dialog-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 35px;
+}
+
+.help-dialog-btn {
+  margin-top: -20px;
+  color: white;
+  font-size: 2rem;
+  font-weight: 550;
+  background-color: #1f1f29;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  padding: 1.5rem;
+  border-radius: 26px;
+  width: 220px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background-color 0.1s ease, color 0.1s ease;
+  transition: box-shadow 0.1s ease, color 0.1s ease;
+}
+
+.help-dialog-btn:hover {
+  background-color: #252732;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.help-chat-btn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar {
+  color: white;
+  background-color: #353543;
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  /*overflow-x: auto;*/
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 80px;
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0 20%;
+  max-width: 1100px;
+  min-width: 1100px;
+  width: 100%;
+}
+
+.navbar-options {
+  flex: 4;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.navButton {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  border: none;
+  background-color: #353543;
+  font-size: 1.75rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: 550;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: #454552;
+}
+
+.george-logo {
+  width: 48px;
+  height: 80px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.george-logo-phone {
+  display: none;
+  width: 48px;
+  height: 80px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.account-buttons {
+  flex: 1;
+  max-width: max-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+}
+
+.account-buttons-phone {
+  flex: 1;
+  max-width: max-content;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
+  padding-right: 1rem;
+}
+
+.account-settings-button {
+  background-color: #22222F;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 2.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  margin-right: 1rem;
+}
+
+.account-settings-button:hover {
+  background-color: #454552;
+}
+
+/* Pozicování dropdownu k tlačítku */
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Popover okno */
+.dropdown-menu {
+  /*display: none;*/
+  /*to znamená že se to nezobrazí původně*/
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 380px;
+  background-color: #1a1b23;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+
+  /* bez toho to zlobí */
+  display: flex;
+  flex-direction: column;
+
+  max-height: calc(100vh - 100px);
+
+  /* VÝCHOZÍ SKRYTÝ STAV PRO ANIMACI: */
+  /*opacity: 0;
+    visibility: hidden;*/
+  /* Posuneme ho o 15px nahoru a mírně zmenšíme pro "pop-out" efekt */
+  /*transform: translateY(-15px) scale(0.95);*/
+  /* Nastavení plynulého přechodu pro všechny změněné vlastnosti */
+  /*transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;*/
+
+  /* 1. Určíme, že se má odrolovat směrem SHORA DOLŮ (ne odprostřed) */
+  transform-origin: top center;
+  /* 2. Srolujeme výšku na 0 % */
+  transform: scaleY(0);
+  /* Plynulý přechod */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Když se přidá třída .open, menu se zobrazí */
+.dropdown-wrapper.open .dropdown-menu {
+  /*opacity: 1;
+  visibility: visible;*/
+  /* Sjedeme na původní pozici a původní velikost */
+  /*transform: translateY(0) scale(1);*/
+  transform: scaleY(1)
+}
+
+/* Šipka (trojúhelník) nahoře nad popoverem */
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  background-color: #1a1b23;
+  transform: rotate(45deg);
+}
+
+/* Sekce v menu */
+.menu-section {
+  display: flex;
+}
+
+.section-title {
+  color: #8f96a3;
+  font-size: 2rem;
+  font-weight: 550;
+  margin: 16px 0 16px 16px;
+}
+
+/* Kartičky položek (Účet / Karta) */
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.item-card:hover {
+  background-color: #252732;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info div {
+  margin: 5px;
+}
+
+.item-name {
+  color: #8f96a3;
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.item-sub {
+  color: #8f96a3;
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+
+.item-value {
+  font-weight: 600;
+  font-size: 2rem;
+  color: rgb(51, 168, 51);
+}
+
+/* Ikony */
+.icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.circle-blue {
+  background-color: #142a3a;
+  color: #3b82f6;
+}
+
+.circle-black {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.circle-grey {
+  background-color: #3B3B48;
+}
+
+.circle-white {
+  background-color: #E3D9F2;
+  color: purple;
+}
+
+.visa-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+/* Spodní zápatí (Zadané platby) */
+.menu-footer {
+  border-top: 1px solid #2a2c3a;
+  padding: 8px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background-color: #181920;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-footer:hover {
+  background-color: #252732;
+}
+
+.footer-icon {
+  position: relative;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+
+.badge {
+  position: absolute;
+  bottom: 5px;
+  right: -6px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.footer-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.footer-sub {
+  color: #8f96a3;
+  font-size: 13px;
+  margin: 4px 0 0 0;
+}
+
+/* --- 1. OTÁČENÍ ŠIPKY --- */
+.arrow {
+  margin-left: 6px;
+  /* Nastavení plynulosti animace pro šipku */
+  transition: transform 0.3s ease;
+}
+
+/* Když má obal třídu .open, šipka se otočí o 180 stupňů */
+.dropdown-wrapper.open .arrow {
+  transform: rotate(180deg);
+}
+
+.blue-line {
+  background-color: #2A3C4D;
+  height: auto;
+  width: 5px;
+}
+
+.purple-line {
+  background-color: #491B6B;
+  height: auto;
+  width: 5px;
+}
+
+.dropdown-main {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.extensions-dropdown-menu,
+.amount-dropdown-menu,
+.adjust-dropdown-menu,
+.product-card-footer-dropdown-menu1,
+.product-card-footer-dropdown-menu2,
+.product-card-footer-dropdown-menu3 {
+  /*display: none;*/
+  /*to znamená že se to nezobrazí původně*/
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -140px;
+  width: 380px;
+  background-color: #1a1b23;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+
+  /* bez toho to zlobí */
+  display: flex;
+  flex-direction: column;
+
+  max-height: calc(100vh - 100px);
+
+  /* VÝCHOZÍ SKRYTÝ STAV PRO ANIMACI: */
+  /*opacity: 0;
+    visibility: hidden;*/
+  /* Posuneme ho o 15px nahoru a mírně zmenšíme pro "pop-out" efekt */
+  /*transform: translateY(-15px) scale(0.95); */
+  /* Nastavení plynulého přechodu pro všechny změněné vlastnosti */
+  /*transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;*/
+
+
+
+  /* 1. Určíme, že se má odrolovat směrem SHORA DOLŮ (ne odprostřed) */
+  transform-origin: top center;
+  /* 2. Srolujeme výšku na 0 % */
+  transform: scaleY(0);
+  /* Plynulý přechod */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card-footer-dropdown-menu1,
+.product-card-footer-dropdown-menu2,
+.product-card-footer-dropdown-menu3 {
+  transform-origin: bottom center;
+}
+
+.adjust-dropdown-menu {
+  left: -220px;
+  top: calc(100% + 20px);
+  ;
+  background-color: #242330;
+  width: 330px;
+}
+
+.product-card-footer-dropdown-menu1 {
+  background-color: #242330;
+  width: 180px;
+  top: calc(100% - 270px);
+  left: -130px;
+}
+
+.product-card-footer-dropdown-menu2 {
+  background-color: #242330;
+  width: 180px;
+  top: calc(100% - 230px);
+  left: -130px;
+}
+
+.product-card-footer-dropdown-menu3 {
+  background-color: #242330;
+  width: 180px;
+  top: calc(100% - 128px);
+  left: -130px;
+}
+
+.dropdown-wrapper.open .extensions-dropdown-menu,
+.dropdown-wrapper.open .amount-dropdown-menu,
+.dropdown-wrapper.open .adjust-dropdown-menu,
+.dropdown-wrapper.open .product-card-footer-dropdown-menu1,
+.dropdown-wrapper.open .product-card-footer-dropdown-menu2,
+.dropdown-wrapper.open .product-card-footer-dropdown-menu3 {
+  /*opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);*/
+  transform: scaleY(1)
+}
+
+.extensions-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 190px;
+  width: 12px;
+  height: 12px;
+  background-color: #1a1b23;
+  transform: rotate(45deg);
+
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.amount-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 190px;
+  width: 12px;
+  height: 12px;
+  background-color: #242330;
+  transform: rotate(45deg);
+
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.product-card-footer-dropdown-menu1::before,
+.product-card-footer-dropdown-menu2::before,
+.product-card-footer-dropdown-menu3::before {
+  content: '';
+  position: absolute;
+  top: 233px;
+  left: 155px;
+  width: 12px;
+  height: 12px;
+  background-color: #242330;
+  transform: rotate(225deg);
+
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.product-card-footer-dropdown-menu2::before {
+  top: 193px;
+  left: 155px;
+}
+
+.product-card-footer-dropdown-menu3::before {
+  top: 91px;
+  left: 155px;
+}
+
+.extensions-item-card,
+.help-item-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.help-item-card .item-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+}
+
+.extensions-item-card:hover,
+.help-item-card:hover {
+  background-color: #252732;
+}
+
+.top {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.bottom {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.red-circle {
+  background-color: #F86A6B;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.amount-max-min {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100px;
+  background-color: #242330;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.amount-max-min span {
+  font-size: 2rem;
+  font-weight: 550;
+  color: white;
+}
+
+.max-min-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.minus {
+  margin: 2rem;
+}
+
+.max-min-input {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.amount-input-bar {
+  background-color: #242330;
+  border: 2px solid #777788;
+  border-radius: 10px;
+  font-size: 2rem;
+  padding: 1rem;
+  width: 140px;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  color: white;
+}
+
+.search-by-amount-button {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: 50px;
+  background-color: #242330;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.search-by-amount-button a {
+  color: white;
+  background-color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.search-by-amount-button a:hover {
+  background-color: #3060c9;
+}
+
+.hamburger-button {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 1.5rem;
+  border-radius: 20px;
+  gap: 10px;
+  font-size: 1.75rem;
+  font-weight: 550;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.hamburger-button:hover {
+  background-color: #454552;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger span {
+  width: 100%;
+  height: 2px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.navbar-menu {
+  display: none;
+}
+
+.navButton-menu {
+  background-color: none;
+  border-bottom: 1px solid white;
+  text-decoration: none;
+  color: white;
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 24px 0 24px 24px;
+  transition: background-color 0.2s ease, color 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 15px;
+}
+
+.navButton-menu:hover {
+  background-color: #1d1d33;
+}
+
+.footerButton-menu {
+  text-decoration: none;
+  color: white;
+  font-size: 1.75rem;
+  padding: 8px 0 8px 24px;
+  transition: background-color 0.2s ease, color 0.3s ease;
+}
+
+.footerButton-menu:hover {
+  background-color: #1d1d33;
+}
+
+.nav-menu-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.nav-menu-dropdown,
+.nav-menu-dropdown-extensions,
+.nav-menu-dropdown-help {
+  /* Klíčová vlastnost: roztáhne div přes celou šířku rodiče */
+  width: 100%;
+
+  /* Zabezpečí, že vnitřek bude zarovnaný správně do sloupce */
+  display: flex;
+  flex-direction: column;
+}
+
+.dropButton {
+  border-bottom: none;
+}
+
+.pressed {
+  background-color: #1d1d33;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+.online-label {
+  font-size: 1.5rem;
+  color: rgb(121, 247, 121);
+  background-color: rgb(0, 58, 0);
+  width: max-content;
+  border-radius: 26px;
+  padding: 0.5rem 1rem;
+}
+
+.introduction {
+  background-color: #48485a;
+  top: 80px;
+  height: 190px;
+  margin-bottom: -35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 0 20%;
+}
+
+.introduction-content {
+
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  margin-top: -35px;
+  width: 100%;
+}
+
+.introduction-content img {
+  padding: 2rem;
+  margin-left: 2rem;
+  animation: flyIn 0.8s ease-out forwards;
+}
+
+@keyframes flyIn {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+    /* Začíná 100px vlevo mimo pozici */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    /* Doletí na své normální místo */
+  }
+}
+
+.introduction-content span {
+  color: white;
+  font-size: 3rem;
+  font-weight: 550;
+}
+
+.toolbar-wrap {
+  padding: 0 20%;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar {
+  z-index: 100;
+  height: 70px;
+  max-width: 1100px;
+  min-width: 1100px;
+  background-color: #242330;
+  border-radius: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-bar {
+  display: flex;
+}
+
+.toolbar-search {
+  background-color: #242330;
+  border: 2px solid #777788;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  font-size: 2rem;
+  padding: 1rem;
+  width: 550px;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  color: white;
+}
+
+.search-date-active {
+  width: 400px;
+}
+
+.date-input-picker {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  border: 2px solid #3a75f5;
+  padding: 1.5rem 2rem;
+  margin-left: -2px;
+  cursor: pointer;
+  width: 200px;
+  gap: 6px;
+  color: white;
+}
+
+.date-input-picker-active {
+  display: flex;
+}
+
+.date-input.picker span {
+  font-size: 2rem;
+  font-weight: 550;
+}
+
+.date-input-picker input {
+  width: 90px;
+  border: none;
+  background-color: #242330;
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+}
+
+.toolbar-search:hover {
+  border: 2px solid #3a75f5;
+  outline: none;
+}
+
+.toolbar-search:focus {
+  border: 4px solid #4c83fa;
+  outline: none;
+}
+
+
+.search-bar-button {
+  display: flex;
+  align-items: center;
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  border: 2px solid #777788;
+  padding: 1.6rem 2rem;
+  margin-left: -2px;
+  cursor: pointer;
+}
+
+.search-button {
+  background-color: #3a75f5;
+  font-size: 3rem;
+  color: white;
+  padding: 1rem 2.5rem;
+  border-top-right-radius: 26px;
+  border-bottom-right-radius: 26px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dateBtn-date-active {
+  display: none;
+}
+
+.input-is-active {
+  background-color: #242330;
+  cursor: not-allowed;
+  font-size: 3rem;
+  color: white;
+  padding: 1rem 2.5rem;
+  border-top-right-radius: 26px;
+  border-bottom-right-radius: 26px;
+}
+
+.search-button:hover {
+  box-shadow: 0 0 15px 2px rgba(39, 75, 238, 0.25);
+  background-color: #2458ca;
+}
+
+.print-button {
+  color: #3a75f5;
+  font-size: 2.5rem;
+  padding: 1rem;
+  border-radius: 26px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.print-button:hover {
+  background-color: #282635;
+}
+
+.adjust-button {
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1rem;
+  border-radius: 26px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.adjust-button:hover {
+  background-color: #282635;
+}
+
+.adjust-button-phone {
+  display: none;
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1rem;
+  border-radius: 26px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.adjust-button-phone:hover {
+  background-color: #282635;
+}
+
+.layout-select {
+  display: flex;
+  flex-direction: row;
+}
+
+.layout-select input[type="radio"] {
+  display: none;
+}
+
+.layout-button {
+  color: #3a75f5;
+  font-size: 3rem;
+  border: 2px solid #777788;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.layout-button-left {
+  border-top-left-radius: 26px;
+  border-bottom-left-radius: 26px;
+}
+
+.layout-button-right {
+  border-top-right-radius: 26px;
+  border-bottom-right-radius: 26px;
+  margin-left: -1px;
+}
+
+.layout-select input[type="radio"]:checked+label {
+  border-color: #3a75f5;
+}
+
+.adjust-dropdown-menu .dropdown-main,
+.product-card-footer-dropdown-menu1 .dropdown-main,
+.product-card-footer-dropdown-menu2 .dropdown-main,
+.product-card-footer-dropdown-menu3 .dropdown-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.adjust-option,
+.adjust-dropdown-menu label,
+.product-card-footer-option {
+  color: white;
+  padding: 1rem;
+  font-size: 2rem;
+  font-weight: 550;
+  cursor: pointer;
+  border: 3px solid #242330;
+
+}
+
+.adjust-dropdown-menu label {
+  padding: 0.5rem 1rem;
+}
+
+.adjust-option:hover,
+.adjust-dropdown-menu label:hover,
+.product-card-footer-option:hover {
+  border-radius: 10px;
+  border: 3px solid #3a75f5;
+}
+
+.toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  cursor: pointer;
+}
+
+/* Skrytí klasického checkboxu */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Tělo přepínače */
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #383842;
+  /* Vypnutý stav - šedá */
+  transition: background-color 0.25s ease;
+  border-radius: 34px;
+}
+
+/* Posuvné kolečko */
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+  border-radius: 50%;
+}
+
+/* Zapnutý stav (Modrá z obrázku: #5c8dff) */
+input:checked+.slider {
+  background-color: #5c8dff;
+}
+
+/* Kolečko při zapnutí (tmavé kolečko z obrázku) */
+input:checked+.slider::before {
+  transform: translateX(24px);
+  background-color: #1a1921;
+}
+
+
+/* 1. Definice animace rozevírání */
+@keyframes calendarSlideDown {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes calendarSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    /* Začíná 30px pod svou finální pozicí */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    /* Dojede na své původní místo */
+  }
+}
+
+/* Úprava hlavního obalu kalendáře */
+.flatpickr-calendar {
+  display: block !important;
+  left: 48vw !important;
+  top: 305px !important;
+  background: #242330 !important;
+  /* Tmavé pozadí */
+  border: 1px solid #2d2f3e !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+
+  transform-origin: top center !important;
+
+}
+
+.flatpickr-calendar.rangeMode.animate.multiMonth.arrowTop.arrowLeft.open {
+  animation: calendarSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.flatpickr-calendar.arrowTop::before {
+  border-width: 10px !important;
+  border-bottom-color: #242330 !important;
+  /* Změň na požadovanou barvu */
+}
+
+/* 2. Vnitřní výplň šipky (musí odpovídat barvě pozadí kalendáře) */
+.flatpickr-calendar.arrowTop::after {
+  border-width: 10px !important;
+  border-bottom-color: #242330 !important;
+  /* Změň na požadovanou barvu pozadí kalendáře */
+}
+
+/* Měsíc a rok v hlavičce */
+.flatpickr-current-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* Názvy dnů (Pon, Úte...) */
+span.flatpickr-weekday {
+  color: #7b7e8e !important;
+  font-weight: 600 !important;
+}
+
+/* Jednotlivé dny */
+.flatpickr-day {
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  /* Kulatý tvar dnů */
+  max-width: none !important;
+  margin: 0 !important;
+  /* Zruší mezery mezi dny */
+  box-shadow: none !important;
+  /* Zruší vnitřní stíny Flatpickru */
+}
+
+/* Hover efekt při najetí myší */
+.flatpickr-day:hover {
+  background: #274385 !important;
+  border-color: transparent !important;
+}
+
+.flatpickr-day.today {
+  background: #2b52b2 !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.flatpickr-day.inRange {
+  border-radius: 0px !important;
+  background: #2b52b2 !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.flatpickr-day.startRange {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  background: #5883FB !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.flatpickr-day.endRange {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  background: #5883FB !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Šipky pro posun měsíců */
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  fill: #4d82f3 !important;
+  /* Modrá barva šipek */
+}
+
+.calendar-footer {
+  display: flex;
+  gap: 15px;
+  padding: 1rem;
+  margin-left: 360px;
+}
+
+.calendar-footer a {
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1rem 2rem;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.calendar-clear-btn {
+  border: 2px solid #777788;
+  color: #3a75f5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.calendar-clear-btn:hover {
+  background-color: #282635;
+}
+
+.calendar-search-btn {
+  background-color: #3a75f5;
+  color: white;
+  transition: box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.calendar-search-btn:hover {
+  box-shadow: 0 0 15px 2px rgba(10, 30, 238, 0.25);
+}
+
+.phone-search-bar {
+  display: none;
+  width: 100%;
+  max-width: 580px;
+  border: 2px solid #777788;
+  border-radius: 26px;
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.phone-search-bar i {
+  font-size: 3rem;
+}
+
+.phone-search-bar:hover {
+  background-color: #282635;
+}
+
+.right-toolbar-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.print-adjust {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  padding: 0 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #13131A;
+  height: 670px;
+  margin-top: -35px;
+}
+
+.overview {
+  z-index: 1;
+  flex: 1;
+  max-width: 1100px;
+  min-width: 1100px;
+  width: 100%;
+  border-bottom: 1px solid #242330;
+  padding-top: 50px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.overview-arrow-right {
+  position: absolute;
+  right: 0;
+  margin-bottom: -20px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #2563eb;
+  color: white;
+  border: flex;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.overview-arrow-left {
+  position: absolute;
+  left: 0;
+  margin-bottom: -20px;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #2563eb;
+  color: white;
+  border: flex;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.overview-header {
+  flex: 2.5;
+  /*background-color: blue;*/
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.overview-header h2,
+.products h2 {
+  font-size: 3rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.add-edit-button {
+  font-size: 1.75rem;
+  color: #3a75f5;
+  font-weight: 550;
+  border-radius: 26px;
+  padding: 1rem;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.add-edit-button:hover {
+  background-color: #16161f;
+}
+
+.overview-cards {
+  flex: 4;
+  /*background-color: purple;*/
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
+
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  /* Udržuje karty zarovnané při posunu */
+
+  /* Skrytí scrollbaru pro čistý vzhled */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+
+.overview-cards::-webkit-scrollbar {
+  display: none;
+}
+
+.overview-card {
+  background-color: #242330;
+  height: 100%;
+  width: 255px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.overview-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.overview-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 20px;
+}
+
+.overview-card-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 520;
+}
+
+.overview-card-amount {
+  color: white;
+  font-size: 2.75rem;
+  font-weight: 550;
+}
+
+.overview-card-desc {
+  color: #606070;
+  font-size: 1.75rem;
+}
+
+.overview-card-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  border-radius: 50%;
+  height: 55px;
+  width: 55px;
+  margin-right: 15px;
+}
+
+.overview-card-logo.blue {
+  color: #428AEF;
+  background-color: #112F53;
+}
+
+.overview-card-logo.purple {
+  color: #A35DB3;
+  background-color: #470B42;
+}
+
+.overview-card-logo.green {
+  color: #3CB082;
+  background-color: #01331B;
+}
+
+.products {
+  width: 100%;
+  z-index: 1;
+  flex: 2;
+  max-width: 1100px;
+  min-width: 1100px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.products-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.products-bank-amount {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.products-bank-amount h3 {
+  color: white;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.products-bank-amount i {
+  margin: 0 5px;
+  color: #3a75f5;
+  font-size: 1.75rem;
+}
+
+.amount-tooltip {
+  background-color: #48485a;
+  color: white;
+  font-size: 1.75rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  z-index: 1000;
+  width: 150px;
+  padding: 1rem;
+  border-radius: 10px;
+
+  position: absolute;
+  top: 475px;
+  left: 428px;
+  visibility: hidden;
+}
+
+.amount-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 110px;
+  left: 75px;
+  width: 8px;
+  height: 8px;
+  background-color: #48485a;
+  transform: rotate(45deg);
+}
+
+.products-bank-amount i:hover .amount-tooltip {
+  visibility: visible;
+}
+
+.products-bank-amount img {
+  width: 22px;
+  height: 16px;
+  border-radius: 5px;
+}
+
+.product-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.product-card {
+  width: 255px;
+  height: 280px;
+  background-color: #242330;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border-top: #242330 solid 5px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.amount-product-card {
+  border-top: #2A3C4D solid 5px;
+}
+
+.debit-product-card {
+  border-top: #491B6B solid 5px;
+}
+
+.product-card-header {
+  flex: 1;
+  width: 100%;
+  display: flex;
+}
+
+.product-card-header-info {
+  flex: 1;
+  padding-left: 2rem;
+  padding-top: 1.25rem;
+}
+
+.product-card-header-info h1 {
+  font-weight: 600;
+  font-size: 2rem;
+  color: white;
+}
+
+.product-card-header-info h2 {
+  color: #8f96a3;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.product-card-header-logo {
+  height: 50px;
+  width: 50px;
+  margin-top: 2.25rem;
+  margin-right: 2rem;
+}
+
+.product-card-header-logo i {
+  color: #3a75f5;
+  font-size: 4rem;
+  margin-top: 1rem;
+}
+
+.product-card-main {
+  flex: 3;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvasContainer {
+  height: 120px;
+}
+
+.debit-card-main {
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.debit-card-main span {
+  color: #8f96a3;
+  font-size: 1.75rem;
+}
+
+.product-card-main-amount {
+  flex: 1;
+  font-weight: 600;
+  font-size: 2.5rem;
+  color: rgb(51, 168, 51);
+  padding-left: 2rem;
+}
+
+.product-card-main-graph {
+  flex: 4;
+}
+
+.money-by-hand-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.money-by-hand-btn {
+  padding: 0 2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+.money-by-hand-btn h1 {
+  font-size: 1.5rem;
+  color: #8f96a3;
+}
+
+.money-by-hand-btn h2 {
+  font-size: 2rem;
+}
+
+.money-by-hand-btn:hover {
+  background-color: #252732;
+}
+
+.product-card-footer {
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #32313d;
+}
+
+.product-card-footer-btn {
+  white-space: nowrap;
+  color: #3a75f5;
+  font-size: 2rem;
+  font-weight: 550;
+  padding: 1rem;
+  border-radius: 26px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  margin: 0 2rem;
+}
+
+.product-card-footer-btn:hover {
+  background-color: #282635;
+}
+
+.footer {
+  background-color: #363643;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20%;
+
+}
+
+.footer-content {
+  flex: 1;
+  max-width: 1100px;
+  min-width: 1100px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.footer-content img {
+  width: 58px;
+  height: 26px;
+}
+
+.footer-btn {
+  color: white;
+  font-size: 1.5rem;
+  padding: 1rem;
+  border-radius: 26px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.footer-btn:hover {
+  background-color: #454552;
+}
+
+@media (max-height: 470px) {
+  .amount-dropdown-menu {
+    top: calc(100% - 206px);
+    z-index: 1000;
+    transform-origin: bottom center;
+    /* 2. Srolujeme výšku na 0 % */
+    transform: scaleY(0);
+    /* Plynulý přechod */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dropdown-wrapper.open .amount-dropdown-menu {
+    transform: scaleY(1);
+  }
+
+  .amount-dropdown-menu::before {
+    top: 144px;
+    transform: rotate(225deg);
+  }
+
+  .adjust-dropdown-menu {
+    top: calc(100% - 280px);
+    z-index: 1000;
+    transform-origin: bottom center;
+    /* 2. Srolujeme výšku na 0 % */
+    transform: scaleY(0);
+    /* Plynulý přechod */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@media (max-height: 560px) {
+  .adjust-dropdown-menu {
+    top: calc(100% - 280px);
+    z-index: 1000;
+    transform-origin: bottom center;
+    /* 2. Srolujeme výšku na 0 % */
+    transform: scaleY(0);
+    /* Plynulý přechod */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@media (max-height: 660px) {
+  .flatpickr-calendar {
+    top: -120px !important;
+  }
+
+  .flatpickr-calendar.rangeMode.animate.multiMonth.arrowTop.arrowLeft.open {
+    animation: calendarSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+
+  .flatpickr-calendar.arrowTop::after {
+    top: 356px !important;
+    border-bottom-color: #242330 !important;
+    rotate: 180deg;
+  }
+}
+
+@media (min-height: 1000px) {
+  .main {
+    height: 100vh;
+  }
+
+  .overview {
+    max-height: 180px;
+  }
+
+  .introduction-content {
+    max-width: 1100px;
+  }
+}
+
+@media (max-width: 1250px) {
+
+  .product-card {
+    width: 210px;
+  }
+
+  .flatpickr-calendar {
+    left: 35vw !important;
+  }
+
+  .flatpickr-calendar.arrowTop::before,
+  .flatpickr-calendar.arrowTop::after {
+    left: 150px !important;
+  }
+
+  .nav-inner {
+    max-width: 900px;
+    min-width: 900px;
+  }
+
+  .toolbar {
+    max-width: 900px;
+    min-width: 900px;
+  }
+
+  .toolbar-search {
+    width: 350px;
+  }
+
+  .overview {
+    max-width: 900px;
+    min-width: 900px;
+  }
+
+  .footer-content {
+    max-width: 900px;
+    min-width: 900px;
+  }
+
+  .overview-card {
+    width: 210px;
+  }
+
+  .overview-card-title {
+
+    width: 120px;
+    white-space: nowrap;
+    /* Zakáže automatické zalamování textu na nový řádek */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .products {
+    max-width: 900px;
+    min-width: 900px;
+  }
+
+  .search-date-active {
+    width: 200px;
+  }
+}
+
+@media (max-width: 990px) {
+
+  .help-button {
+    display: none;
+  }
+
+  .introduction {
+    height: 120px;
+  }
+
+  .introduction-content {
+    justify-content: center;
+  }
+
+  .introduction-content img {
+    display: none;
+  }
+
+  .flatpickr-calendar {
+    display: none !important;
+  }
+
+  .main {
+    padding: 0 3%;
+    height: 711px;
+  }
+
+
+  .overview {
+    flex: 1;
+    max-width: 100%;
+    min-width: 100%;
+    padding-left: 1%;
+    padding-right: 1%;
+  }
+
+  .overview-card-info {
+    max-width: 100%;
+    min-width: 70px;
+  }
+
+  .overview-card {
+    max-width: 100%;
+    min-width: 100px;
+    width: 90%;
+  }
+
+  .product-card {
+    max-width: 100%;
+    min-width: 100px;
+    width: 90%;
+  }
+
+  .overview-card-title {
+    width: 180px;
+  }
+
+  .products {
+    margin-top: 15px;
+    flex: 3;
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 1%;
+  }
+
+
+
+  .footer {
+    display: none;
+  }
+
+  .phone-search-bar {
+    display: flex;
+  }
+
+  .search-bar {
+    display: none;
+  }
+
+  .nav-inner {
+    display: none;
+  }
+
+  .toolbar-wrap {
+    padding: 0 3%;
+    /*display: none;*/
+  }
+
+  .toolbar {
+    max-width: 100%;
+    min-width: 100%;
+    padding: 0 1%;
+  }
+
+  /* 1. Zobrazíme 3 čárky */
+  .hamburger-button {
+    display: flex;
+  }
+
+  /* 2. Schováme odkazy a připravíme je jako rozbalovací menu pod navbarem */
+  .navbar-options {
+    display: none;
+    /* Skryje odkazy z lišty */
+    position: absolute;
+    top: 100%;
+    /* Sjedou hned pod navbar */
+    left: 0;
+    width: 100%;
+    background-color: #1a1b23;
+    flex-direction: column;
+    /* Položky půjdou pod sebe */
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .navbar {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-inner {
+    padding: 0 2%;
+  }
+
+  .account-settings-button {
+    display: none;
+  }
+
+  .account-buttons {
+    display: none;
+  }
+
+  .account-buttons-phone {
+    flex: 1;
+    max-width: fit-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .george-logo-phone {
+    display: flex;
+  }
+
+  .navbar-menu {
+    display: flex;
+    position: fixed;
+
+    top: 80px;
+    left: 0;
+
+    width: 100vw;
+    height: calc(100vh - 80px);
+
+    z-index: 999;
+
+    background-color: #1D1D28;
+
+    flex-direction: column;
+
+    overflow-y: auto;
+
+    /* 1. Určíme, že se má odrolovat směrem SHORA DOLŮ (ne odprostřed) */
+    transform-origin: top center;
+    /* 2. Srolujeme výšku na 0 % */
+    transform: scaleY(0);
+    /* Plynulý přechod */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 3. Když přes JS přidáme třídu .active, odkazy se zobrazí */
+  .navbar-menu.active {
+    transform: scaleY(1)
+  }
+
+  .menu-products,
+  .menu-extensions,
+  .menu-help {
+    max-height: 0;
+    /* Výška je 0 = schováno */
+    overflow: hidden;
+    /* Skryje obsah uvnitř */
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* Plynulá animace výšky a mezer */
+    transition: max-height 0.35s ease-in-out, padding 0.35s ease-in-out;
+    padding: 0;
+
+
+    border-bottom: 1px solid white;
+  }
+
+  .nav-menu-dropdown.open .menu-products,
+  .nav-menu-dropdown-extensions.open .menu-extensions,
+  .nav-menu-dropdown-help.open .menu-help {
+    max-height: 700px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+  }
+
+  .nav-menu-dropdown.open .arrow,
+  .nav-menu-dropdown-extensions.open .arrow,
+  .nav-menu-dropdown-help.open .arrow {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
+
+  .menu-footer {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+
+  .flatpickr-calendar {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 90vw !important;
+  }
+}
+
+@media (max-width: 875px) {
+
+  .overview-card {
+    max-width: 380px;
+    min-width: 380px;
+  }
+
+  .product-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    gap: 30px;
+  }
+
+  .product-card {
+    min-width: 100px;
+    width: 100%;
+  }
+
+  .main {
+    height: 915px;
+  }
+
+  .overview {
+    flex: 1;
+  }
+
+  .products {
+    flex: 5;
+  }
+
+}
+
+@media (max-width: 748px) {
+
+  .overview-cards {
+    gap: 35px;
+  }
+
+  .product-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(269px, 1fr));
+    gap: 35px;
+  }
+}
+
+@media (max-width: 625px) {
+  .main {
+    height: 1350px;
+  }
+}
+
+
+@media (max-width: 560px) {
+
+  .introduction {
+    height: 130px;
+  }
+
+  .main {
+    margin-top: -95px;
+  }
+
+  .nav-inner {
+    display: none;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    height: 130px;
+  }
+
+  .phone-search-bar {
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .right-toolbar-section {
+    width: 90%;
+    justify-content: space-between;
+  }
+
+  .adjust-button {
+    display: none;
+  }
+
+  .adjust-button-phone {
+    display: flex;
+  }
+
+  .adjust-dropdown-menu {
+    left: -300px;
+  }
+
+  .overview {
+    margin-top: 7rem;
+  }
+
+  .overview-arrow-right,
+  .overview-arrow-left {
+    margin-bottom: -20px;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .overview-arrow-right,
+  .overview-arrow-left {
+    margin-bottom: -20px;
+  }
+}
+
+@media (min-height: 1000px) and (max-width: 990px) {
+  .main {
+    height: 100vh;
+  }
+
+  .overview {
+    max-height: 180px;
+  }
+}

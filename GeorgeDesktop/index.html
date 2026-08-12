@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</head>
+
+<body>
+  <div class="help-button" id="help-button"><i class="fa-regular fa-circle-question"></i></div>
+  <div class="help-dialog" id="help-dialog">
+    <div class="help-dialog-text">
+      <h1>Mohu Vám pomoci?</h1>
+      <p>Já a mojí kolegové/gyně Vám rádi pomůžeme.</p>
+    </div>
+    <div class="help-dialog-buttons">
+      <a class="help-dialog-btn"><i class="fa-solid fa-phone"></i> Linka podpory</a>
+      <a class="help-dialog-btn help-chat-btn"><div><i class="fa-regular fa-message"></i> Chat</div> <span class="online-label">Online</span></a>
+    </div>
+  </div>
+  <div class="navbar">
+    <div class="hamburger-button" id="hamburgerBtn">
+      <button class="hamburger" type="button" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <span>Menu</span>
+    </div>
+
+    <div class="navbar-menu" id="navbar-menu">
+      <div class="nav-menu-section">
+        <a href="" class="navButton-menu">Přehled</a>
+
+        <div class="nav-menu-dropdown" id="dropdownProductsMenu">
+          <a class="navButton-menu dropButton" id="dropdownProductsBtn">
+            <span>Vaše produkty</span>
+            <!-- Šipka oddělená do vlastní složky -->
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+
+          <!-- Rozbalovací popover/menu -->
+          <div class="menu-products" id="menu-products">
+
+            <!-- Sekce Účty -->
+            <div class="dropdown-main">
+              <h4 class="section-title">Účty</h4>
+              <div class="menu-section">
+                <div class="blue-line"></div>
+                <div class="item-card">
+                  <div class="icon-box circle-blue">
+                    <!-- SVG Ikona peněz/účtu -->
+                    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                      <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                  </div>
+                  <div class="item-info">
+                    <div class="item-name">Karel Novák</div>
+                    <div class="item-title">Plus účet</div>
+                    <div class="item-sub">1234567890/0800</div>
+                  </div>
+                  <div class="item-value">123 456 Kč</div>
+                </div>
+              </div>
+
+              <!-- Sekce Karty -->
+              <h4 class="section-title">Karty</h4>
+              <div class="menu-section">
+                <div class="purple-line"></div>
+                <div class="item-card">
+                  <div class="icon-box circle-black">
+                    <span class="visa-text">VISA</span>
+                  </div>
+                  <div class="item-info">
+                    <div class="item-name">KAREL NOVÁK</div>
+                    <div class="item-title">Visa Classic</div>
+                    <div class="item-sub">1234 56XX XXXX 7890</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Spodní sekce Zadané platby -->
+            <div class="menu-footer">
+              <div class="footer-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span class="badge">0</span>
+              </div>
+              <div class="footer-text">
+                <div class="footer-link">Zadané platby</div>
+                <p class="footer-sub">Nemáte žádné rozepsané platby.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="nav-menu-dropdown-extensions" id="dropdownExtensionsMenu">
+          <a class="navButton-menu dropButton" id="dropdownExtensionsBtn">
+            <span>Rozšíření</span>
+            <!-- Šipka oddělená do vlastní složky -->
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+
+          <!-- Rozbalovací popover/menu -->
+          <div class="menu-extensions" id="menu-extensions">
+
+
+            <div class="dropdown-main">
+              <div class="extensions-item-card">
+                <div class="icon-box circle-grey">
+                  <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Správce financí</div>
+                </div>
+              </div>
+              <div class="extensions-item-card">
+                <div class="icon-box circle-white">
+                  <i class="fa-solid fa-money-bill-trend-up"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Najdi a Kup</div>
+                </div>
+              </div>
+              <div class="extensions-item-card">
+                <div class="icon-box circle-grey">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Dobíjení kreditu</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <a href="" class="navButton-menu">Extra</a>
+        <a href="" class="navButton-menu">FIT</a>
+        <a href="" class="navButton-menu"><span>Kontaky</span>
+          <div class="red-circle"><span>1</span></div>
+        </a>
+        <a href="" class="navButton-menu">Váš profil</a>
+
+        <div class="nav-menu-dropdown-help" id="dropdownHelpMenu">
+          <a class="navButton-menu dropButton" id="dropdownHelpBtn">
+            <span>Nápověda a podpora</span>
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </a>
+
+          <div class="menu-help" id="menu-help">
+            <div class="dropdown-main">
+              <div class="help-item-card">
+                <div class="item-info">
+                  <div class="item-title">Linka podpory</div>
+                </div>
+              </div>
+            </div>
+            <div class="dropdown-main">
+              <div class="help-item-card">
+                <div class="item-info">
+                  <div class="item-title">Chat <span class="online-label">Online</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <a href="" class="footerButton-menu">Kontakty</a>
+      <a href="" class="footerButton-menu">Zásady ochrany dat</a>
+      <a href="" class="footerButton-menu">Podmínky</a>
+      <a href="" class="footerButton-menu">Licence třetích stran</a>
+    </div>
+
+    <img src="george.png" alt="" class="george-logo-phone">
+    <div class="account-buttons-phone">
+      <a href="" class="navButton">Odhlášení <i class="fa-solid fa-power-off"></i></a>
+    </div>
+
+    <div class="nav-inner">
+
+
+      <img src="george.png" alt="" class="george-logo">
+      <div class="navbar-options" id="navbar-options">
+        <a href="" class="navButton">Přehled</a>
+        <!-- Hlavní položka menu s rozbalovacím okne -->
+        <div class="dropdown-wrapper" id="productsDropdown">
+          <button class="navButton" id="dropdownBtn" type="button">
+            <span>Vaše produkty</span>
+            <!-- Šipka oddělená do vlastní složky -->
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- Rozbalovací popover/menu -->
+          <div class="dropdown-menu">
+
+            <!-- Sekce Účty -->
+            <div class="dropdown-main">
+              <h4 class="section-title">Účty</h4>
+              <div class="menu-section">
+                <div class="blue-line"></div>
+                <div class="item-card">
+                  <div class="icon-box circle-blue">
+                    <!-- SVG Ikona peněz/účtu -->
+                    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                      <circle cx="12" cy="12" r="2"></circle>
+                    </svg>
+                  </div>
+                  <div class="item-info">
+                    <div class="item-name">Karel Novák</div>
+                    <div class="item-title">Plus účet</div>
+                    <div class="item-sub">1234567890/0800</div>
+                  </div>
+                  <div class="item-value">123 456 Kč</div>
+                </div>
+              </div>
+
+              <!-- Sekce Karty -->
+              <h4 class="section-title">Karty</h4>
+              <div class="menu-section">
+                <div class="purple-line"></div>
+                <div class="item-card">
+                  <div class="icon-box circle-black">
+                    <span class="visa-text">VISA</span>
+                  </div>
+                  <div class="item-info">
+                    <div class="item-name">KAREL NOVÁK</div>
+                    <div class="item-title">Visa Classic</div>
+                    <div class="item-sub">1234 56XX XXXX 7890</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Spodní sekce Zadané platby -->
+            <div class="menu-footer">
+              <div class="footer-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span class="badge">0</span>
+              </div>
+              <div class="footer-text">
+                <div class="footer-link">Zadané platby</div>
+                <p class="footer-sub">Nemáte žádné rozepsané platby.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="dropdown-wrapper" id="extensionsDropdown">
+          <button class="navButton" id="extensionsDropdownBtn" type="button">
+            <span>Rozšíření</span>
+            <svg class="arrow" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="extensions-dropdown-menu">
+            <div class="dropdown-main">
+              <div class="extensions-item-card top">
+                <div class="icon-box circle-grey">
+                  <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Správce financí</div>
+                </div>
+              </div>
+              <div class="extensions-item-card">
+                <div class="icon-box circle-white">
+                  <i class="fa-solid fa-money-bill-trend-up"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Najdi a Kup</div>
+                </div>
+              </div>
+              <div class="extensions-item-card bottom">
+                <div class="icon-box circle-grey">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">Dobíjení kreditu</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="" class="navButton">Extra</a>
+        <a href="" class="navButton">FIT</a>
+        <a href="" class="navButton"><span>Kontakty</span>
+          <div class="red-circle"><span>1</span></div>
+        </a>
+      </div>
+      <div class="account-buttons">
+        <a class="account-settings-button"><i class="fa-regular fa-user"></i></a>
+        <a href="" class="navButton"><i class="fa-solid fa-power-off"></i> Odhlášení</a>
+      </div>
+      <div class="account-buttons-phone">
+        <a href="" class="navButton">Odhlášení <i class="fa-solid fa-power-off"></i></a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="introduction">
+    <div class="introduction-content">
+      <img src="good-evening.png">
+      <span>Další den za námi! Dobrý večer, Karle.</span>
+    </div>
+  </div>
+
+  <div class="toolbar-wrap">
+    <div class="toolbar">
+      <div class="phone-search-bar"><i class="fa-brands fa-sistrix"></i><span>Najít transakce</span></div>
+      <div class="search-bar">
+        <input type="search" placeholder="Co pro Vás mám najít?" class="toolbar-search" id="toolbar-search">
+        <div class="dropdown-wrapper" id="amountDropdown">
+          <a class="search-bar-button" id="amountButton"><span>Částka</span></a>
+          <div class="amount-dropdown-menu">
+            <div class="dropdown-main">
+              <div class="amount-max-min">
+                <div class="max-min-text">
+                  <span>Minimální částka</span>
+                  <span>Maximální částka</span>
+                </div>
+                <div class="max-min-input">
+                  <input type="number" class="amount-input-bar">
+                  <span class="minus">-</span>
+                  <input type="number" class="amount-input-bar">
+                </div>
+              </div>
+              <div class="search-by-amount-button">
+                <a>Hledat</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dropdown-wrapper" id="dateDropdown">
+          <a class="search-bar-button" id="kalendar"><span>Datum</span></a>
+          <div class="date-input-picker" id="date-input-picker">
+            <input type="text" inputmode="numeric" pattern="[0-9.]*"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '');" placeholder="Datum od"
+              class="date-input-search" id="date-form">
+            <span>-</span>
+            <input type="text" inputmode="numeric" pattern="[0-9.]*"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '');" placeholder="Datum do"
+              class="date-input-search" id="date-to">
+          </div>
+          <div class="date-dropdown-menu">
+            <div class="dropdown-main">
+            </div>
+          </div>
+        </div>
+
+        <a class="search-button" id="search-button"><span><i class="fa-brands fa-sistrix"></i></span></a>
+      </div>
+      <div class="right-toolbar-section">
+        <div class="layout-select">
+          <input type="radio" name="layout-mode" id="grid" value="grid" checked>
+          <label for="grid" class="layout-button layout-button-left"><i
+              class="fa-solid fa-table-cells-large"></i></label>
+
+          <input type="radio" name="layout-mode" id="list" value="list">
+          <label for="list" class="layout-button layout-button-right"><i class="fa-solid fa-bars"></i></label>
+        </div>
+        <div class="print-adjust">
+          <a class="print-button"><i class="fa-solid fa-print"></i></a>
+          <div class="dropdown-wrapper" id="adjustDropdown">
+            <a class="adjust-button" id="adjust-button">Přizpůsobit</a>
+            <a class="adjust-button-phone" id="adjust-button-phone"><i class="fa-solid fa-ellipsis"></i></a>
+            <div class="adjust-dropdown-menu">
+              <div class="dropdown-main">
+                <span class="adjust-option">Přidat a upravit kategorie</span>
+                <span class="adjust-option">Vytvořit souhrn zůstatků</span>
+                <span class="adjust-option">Vytvořit skupinu produktů</span>
+                <span class="adjust-option">Změnit motiv pozadí</span>
+                <span class="adjust-option">Zobrazít/skrýt produkty</span>
+                <label class="toggle-row">
+                  Zobrazovat souhrnné zůstatky
+                  <div class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="main">
+    <div class="overview">
+      <div class="overview-header">
+        <h2>Jak se Vám daří</h2>
+        <a class="add-edit-button"><i class="fa-solid fa-pen"></i> Přidat a upravit</a>
+      </div>
+      <div class="overview-cards">
+        <div class="overview-card">
+          <div class="overview-card-info">
+            <div class="overview-card-title"><span>Výdaje za srpen</span></div>
+            <div class="overview-card-amount"><span>15 000 Kč</span></div>
+            <div class="overview-card-desc"><span>Nastavit rozpočet</span></div>
+          </div>
+          <div class="overview-card-logo blue"><i class="fa-solid fa-chart-simple"></i></div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-card-info">
+            <div class="overview-card-title">Bydlení</div>
+            <div class="overview-card-amount">8 500 Kč</div>
+            <div class="overview-card-desc"><span></span></div>
+          </div>
+          <div class="overview-card-logo purple"><i class="fa-solid fa-house"></i></div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-card-info">
+            <div class="overview-card-title"><span>Potraviny a stravování</span></div>
+            <div class="overview-card-amount">4 200 Kč</div>
+            <div class="overview-card-desc"><span></span></div>
+          </div>
+          <div class="overview-card-logo green"><i class="fa-solid fa-pizza-slice"></i></div>
+        </div>
+        <button class="overview-arrow-right"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="overview-arrow-left"><i class="fa-solid fa-chevron-left"></i></button>
+      </div>
+    </div>
+    <div class="products">
+      <div class="products-header">
+        <h2>Vaše produkty</h2>
+        <div class="products-bank-amount"><img src="czFlag.svg">
+          <h3>123 456 Kč</h3><i class="fa-solid fa-circle-info">
+            <div class="amount-tooltip"><span>Toto je souhrnný zůstatek všech produktů v této sekci. Pokud nějaký z
+                těchto produkt skryjete, přestanu ho do výpočtu zahrnovat.</span></div>
+          </i>
+        </div>
+      </div>
+      <div class="product-cards">
+
+        <div class="product-card amount-product-card">
+          <div class="product-card-header">
+            <div class="product-card-header-info">
+              <h1>Plus účet</h1>
+              <h2>Karel Novák</h2>
+            </div>
+            <div class="product-card-header-logo">
+              <div class="icon-box circle-blue">
+                <!-- SVG Ikona peněz/účtu -->
+                <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                  <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="product-card-main">
+            <div class="product-card-main-amount">123 456 Kč</div>
+            <div class="product-card-main-graph">
+              <div class="canvasContainer">
+                <canvas id="myChart" class="myChart"></canvas>
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <script>
+                  const ctx = document.getElementById('myChart');
+
+                  new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                      labels: ["Bře", "Dub", "Kvě", "Čvn", "Čvc", "Srp"],
+                      datasets: [
+                        {
+                          label: 'Příjmy',
+                          data: [40000, 25000, 25000, 65000, 85000, 2000],
+                          backgroundColor: '#4CAF50', // Zelená barva
+                          borderRadius: 4,          // Zaoblení rohů sloupců
+                          borderSkipped: false
+                        },
+                        {
+                          label: 'Výdaje',
+                          data: [39500, 19569, 27300, 55941, 90995, 1159],
+                          backgroundColor: '#FF5252', // Červená barva
+                          borderRadius: 4,
+                          borderSkipped: false
+                        }
+                      ]
+                    },
+                    options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      interaction: {
+                        mode: 'index',
+                        intersect: false
+                      },
+                      scales: {
+                        y: { display: false },
+                        x: { grid: { display: false } }
+                      },
+
+                      plugins: {
+                        legend: {
+                          display: false
+                        },
+                        tooltip: {
+                          enabled: true,
+                          backgroundColor: '#48485a',
+                          titleColor: '#8a99ad',
+                          bodyColor: '#ffffff',
+                          padding: 10
+                        }
+                      }
+                    }
+                  });
+                </script>
+
+              </div>
+            </div>
+          </div>
+          <div class="product-card-footer">
+            <a class="product-card-footer-btn">Nová platba</a>
+            <div class="dropdown-wrapper" id="product-card-footer-dropdown-menu1">
+              <a class="product-card-footer-btn" id="product-card-footer-btn1"><i class="fa-solid fa-ellipsis"></i></a>
+              <div class="product-card-footer-dropdown-menu1">
+                <div class="dropdown-main">
+                  <span class="product-card-footer-option">Kopírovat číslo účtu</span>
+                  <span class="product-card-footer-option">Nastavení produktu</span>
+                  <span class="product-card-footer-option">Změnit jméno</span>
+                  <span class="product-card-footer-option">Změnit barvu</span>
+                  <span class="product-card-footer-option">Změnit obrázek</span>
+                  <span class="product-card-footer-option">Skrýt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card debit-product-card">
+          <div class="product-card-header">
+            <div class="product-card-header-info">
+              <h1>Visa Classic</h1>
+            </div>
+            <div class="product-card-header-logo">
+              <div class="icon-box circle-black">
+                <span class="visa-text">VISA</span>
+              </div>
+            </div>
+          </div>
+          <div class="product-card-main debit-card-main">
+            <img src="debit-card.png">
+            <span>1234 56XX XXXX 7890</span>
+          </div>
+          <div class="product-card-footer">
+            <a class="product-card-footer-btn">Zobrazit platby</a>
+            <div class="dropdown-wrapper" id="product-card-footer-dropdown-menu2">
+              <a class="product-card-footer-btn" id="product-card-footer-btn2"><i class="fa-solid fa-ellipsis"></i></a>
+              <div class="product-card-footer-dropdown-menu2">
+                <div class="dropdown-main">
+                  <span class="product-card-footer-option">Nastavení produktu</span>
+                  <span class="product-card-footer-option">Změnit jméno</span>
+                  <span class="product-card-footer-option">Změnit barvu</span>
+                  <span class="product-card-footer-option">Změnit obrázek</span>
+                  <span class="product-card-footer-option">Skrýt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-card-header">
+            <div class="product-card-header-info">
+              <h1>Peníze po ruce</h1>
+            </div>
+            <div class="product-card-header-logo">
+              <i class="fa-solid fa-couch"></i>
+            </div>
+          </div>
+          <div class="product-card-main">
+            <div class="money-by-hand-menu">
+              <div class="money-by-hand-btn">
+                <h1>Půjčka</h1>
+                <h2>2 500 000 Kč</h2>
+              </div>
+              <div class="money-by-hand-btn">
+                <h1>Sloučení půjček</h1>
+                <h2>2 500 000 Kč</h2>
+              </div>
+              <div class="money-by-hand-btn">
+                <h1>Půjčka na bydlení</h1>
+                <h2>1 500 000 Kč</h2>
+              </div>
+            </div>
+          </div>
+          <div class="product-card-footer">
+            <a class="product-card-footer-btn">Zobrazit vše</a>
+            <div class="dropdown-wrapper" id="product-card-footer-dropdown-menu3">
+            <a class="product-card-footer-btn" id="product-card-footer-btn3"><i class="fa-solid fa-ellipsis"></i></a>
+              <div class="product-card-footer-dropdown-menu3">
+                <div class="dropdown-main">
+                  <span class="product-card-footer-option">Co jsou Peníze po ruce?</span>
+                  <span class="product-card-footer-option">Skrýt</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-content">
+      <img src="institute_1.svg">
+      <span class="footer-btn">Kontakty</span>
+      <span class="footer-btn">Zásady ochrany dat</span>
+      <span class="footer-btn">Podmínky</span>
+      <span class="footer-btn">Licence třetích stran</span>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
