@@ -3,6 +3,7 @@
 namespace App\Presentation\Media;
 
 use App\Model\Media\CanonStatus;
+use App\Model\Media\MediaDTO;
 use App\Model\Media\MediaType;
 use App\Model\Media\MediaRepository;
 use App\Model\Media\MediaStatus;
@@ -30,8 +31,10 @@ final class MediaPresenter extends BasePresenter
 
     public function actionDeleteMedia(int $mediaId): void
     {
+        $mediaDTO = $this->mediaFacade->getMediaDTO($mediaId);
         $this->mediaRepository->deleteRow($mediaId);
-        $this->flashMessage('Dílo smazáno', 'success');
+        $fullMediaName = $mediaDTO->partLabel ? $mediaDTO->title . ": " . $mediaDTO->partLabel : $mediaDTO->title;
+        $this->flashMessage('Media ' . $fullMediaName . ' deleted successfully', 'success');
         $this->redirect('Timeline:show');
     }
 
@@ -140,6 +143,12 @@ final class MediaPresenter extends BasePresenter
             pokud po něm nic neni tak se timelien_order přiřadí jako prostě vyšší hodnota,
             a pokud user nic nezadá tak se nové dílo dá na začátek) tím by se mělo předejít zmatku a chaosu jak v kodu tak v ui
             */
+            $mediaDTO = null;
+            if ($this->getParameter('id')) {
+                $id = $this->getParameter('id');
+                $mediaDTO = $this->mediaFacade->getMediaDTO($id);
+                bdump($mediaDTO->status->value);
+            }
 
             $data = ArrayHash::from([
                 'title' => $formData['title'],
@@ -153,7 +162,7 @@ final class MediaPresenter extends BasePresenter
                 'timeline_order' => $this->mediaFacade->calculateTimelineOrder($formData['media_id']),
                 'release_date' => $formData['release_date'],
                 'image_url' => ($this->getImageFromUrlForm() == $formData['old_image_url'] || !$this->getImageFromUrlForm()) ? $formData['old_image_url'] : $this->getImageFromUrlForm(),
-                'status' => MediaStatus::PLANNED->value
+                'status' => $mediaDTO ? $mediaDTO->status->value : MediaStatus::PLANNED->value
             ]);
 
             bdump($data);

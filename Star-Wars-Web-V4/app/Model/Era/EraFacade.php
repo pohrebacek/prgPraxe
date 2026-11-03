@@ -20,12 +20,12 @@ final class EraFacade
     public function getAllEras(): array
     {
         $erasRows = $this->erasRepository->getAll();
-        $eras = array();
+        $eras = ArrayHash::from([]);
         foreach ($erasRows as $eraRow) {
-            $eras[] = $eraRow->era_name;
+            $eras[$eraRow->id] = $eraRow->era_name;
         }
         bdump($eras);
-        return $eras;
+        return (array) $eras;
     }
 
     public function getAllErasForForm(): ArrayHash

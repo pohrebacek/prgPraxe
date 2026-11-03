@@ -62,6 +62,29 @@ final class MediaFacade
         return null;
     }
 
+    public function changeMediaStatus(int $mediaId, string $status): void
+    {
+        $row = $this->mediaRepository->getRowById($mediaId);
+        $data = ArrayHash::from([
+                'title' => $row->title,
+                'description' => $row->description,
+                'canon_status' => $row->canon_status,
+                'media_type' => $row->media_type,
+                'start_year' => $row->start_year,
+                'end_year' => $row->end_year,
+                'era_id' => $row->era_id,
+                'part_label' => $row->part_label,
+                'timeline_order' => $row->timeline_order,
+                'release_date' => $row->release_date,
+                'image_url' => $row->image_url,
+                'status' => $status
+            ]);
+
+        bdump($data);
+
+        $this->mediaRepository->saveRow((array) $data, $mediaId);
+    }
+
 
     public function calculateTimelineOrder(?int $mediaId): string
     {

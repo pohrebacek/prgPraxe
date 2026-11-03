@@ -1,10 +1,18 @@
 {block content}
-<div>
+<div class="navig">
+    <a href="#The Old Republic" class="btn btn-primary">The Old Republic</a>
+    <a href="#High Republic" class="btn btn-primary">High Republic</a>
+    <a href="#Prequel Era" class="btn btn-primary">Prequel Era</a>
+    <a href="#Galactic Empire Era" class="btn btn-primary">Galactic Empire Era</a>
+    <a href="#New Republic Era" class="btn btn-primary">New Republic Era</a>
     <a n:href="Media:add" class="btn btn-light">Add media</a>
+</div>
+<div>
+    
 </div>
 
 <div n:foreach="$mediaDTOs as $mediaDTO" class="container2">
-    <div class="container">
+    <div class="container" id="{$eras[$mediaDTO->eraId]}">
         <div class="imageAYear">
             <img src="{$mediaDTO->imageUrl}" class="image">
             <div>
@@ -16,21 +24,65 @@
 
         <div class="nadpisAText">
             <h1>{$mediaDTO->title}</h1>
+            <h3>{$mediaDTO->partLabel}</h3>
             <div class="line"></div>
             <p>{$mediaDTO->description}</p>
             <div class="line2"></div>
             <div class="stav">
                 <a n:href="Media:edit, id => $mediaDTO->id" class="btn btn-light">Edit media</a>
-                <a n:href="Media:deleteMedia, mediaId => $mediaDTO->id" class="btn btn-light">Delete media</a>
-                Mark as:
-                <select>
-                    {foreach $statusArray as $statusValue => $statusLabel}
-                        <option value="{$statusValue}">
-                            {$statusLabel}
-                        </option>
-                    {/foreach}
-                </select>
+                <a n:href="Media:deleteMedia, mediaId => $mediaDTO->id" class="btn btn-light" onclick="return confirm('Are you sure you want to delete this media?')">Delete media</a>
+                
+                    <label for="status-select-label">Mark as:</label>
+                    <select name="status" class="form-select" onchange="updateSelectClass(this)">
+                        {foreach $statusArray as $statusValue => $statusLabel}
+                            <option value="{json_encode(['mediaId' => $mediaDTO->id, 'status' => $statusValue])}" {if $mediaDTO->status->value == $statusValue}selected{/if} class={$statusLabel}>
+                                {$statusLabel}
+                            </option>
+                        {/foreach}
+                    </select>
+                
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.form-select').forEach(function(selectElement) {
+            updateSelectClass(selectElement);
+        });
+    });
+
+
+document.querySelectorAll('.form-select').forEach(select => {
+    select.addEventListener('change', async function () {
+    const value = this.value;
+    console.log(value);
+
+    const response = await fetch({link changeStatus!}, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+            status: value
+        })
+    });
+});
+});
+
+function updateSelectClass(selectElement) {
+    const states = ['revisiting', 'planned', 'in_progress', 'completed', 'on_hold', 'dropped'];
+
+    selectElement.classList.remove(...states);
+
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+    const selectedClass = selectedOption.className;
+
+    if (selectedClass) {
+        selectElement.classList.add(selectedClass);
+    }
+}
+</script>
