@@ -69,7 +69,7 @@ Projekty jsou řazeny chronologicky.
 - Využil jsem zkušenosti z FinanceWeb a přidal jsem kompletní responzivitu
 - Projekt mě hodně naučil a v tvorbě UI jsem se extrémně posunul.
 
-#Discord-Playtime
+# Discord-Playtime
 - Jedná se o další mini script, který vznikl protože jsem byl s něčím opět nespokojen.
 - Dlouho mě štvalo že na platformě Ubisoft Connect není u některých her vidět odehraný čas. U některých her je zase čas vidět, ale s velkou odchylkou oproti Steamu.
 - Jelikož Discord počítá odehrané hodiny u her (pokud je zapnutá funkce zobrazení aktivity), tak jsem si od Discordu vyžádal log s mojí aktivitou.
